@@ -1,15 +1,5 @@
 # 932PM
 
-Set Up:
+Group Project for IGME 320! Woo!
 
-Clone the repo onto your machine
-
-Install node.js
-
-run `npm install http-server -g` in the terminal
-
-cd into your 932PM repo
-
-run `http-server`
-
-visit `http://localhost:8080/`
+Made with http://www.pixijs.com/
