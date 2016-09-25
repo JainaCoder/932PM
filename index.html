@@ -7,12 +7,19 @@
 	<title>9:32 PM</title>
 
 	<script src="pixi.min.js"></script>
-  <script src="core.js"></script>
+	<script src="js/entity.js"></script>
+	<script src="js/demoEntity.js"></script>
+	<script src="js/level.js"></script>
+	<script src="js/player.js"></script>
+  <script src="js/core.js"></script>
   <script>
 
   console.log(PIXI);
 
-  window.onload = init
+  window.onload = app.core.init
+
+	// TODO: why isnt this working?
+  window.onresize = function () { console.log("on resize event fired") }
 
   </script>
 	<style>

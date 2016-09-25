@@ -13,15 +13,23 @@
             "unix"
         ],
         "quotes": [
-            "error",
-            "single"
+            "off"
         ],
         "semi": [
-            "error",
+            "warn",
             "never"
         ],
         "no-unused-vars": [
-            "warn"
+            "off"
+        ],
+        "comma-dangle": [
+            "off"
+        ],
+        "no-undef": [
+            "off"
+        ],
+        "no-console": [
+            "off"
         ]
     }
 }
