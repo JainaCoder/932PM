@@ -35,10 +35,17 @@ app.core = {
 
     renderer.backgroundColor = app.palette.primary[0]
 
-    app.core.screen = new GameScreen(10, 7)
+    app.core.screen = new LoadingScreen()
+    // app.core.screen = new GameScreen(10, 7)
 
     app.core.lastTime = Date.now()
     app.core.gameLoop()
+  },
+
+  // in case we ever want to add onMount and onUnmount callbacks to screens, we should
+  // do screen changes through here instead of doing it manually
+  switchScreen: function (newScreen) {
+    app.core.screen = newScreen
   },
 
   gameLoop: function () {
