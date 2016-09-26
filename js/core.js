@@ -2,7 +2,6 @@
 
 var app = app || {}
 
-
 app.core = {
   // https://pixijs.github.io/docs/PIXI.WebGLRenderer.html
   renderer: null,
@@ -11,31 +10,32 @@ app.core = {
   // see `render` below for more
   stage: null,
 
-  level: null,
+  screen: null,
+
 
   lastTime: 0, // Used to calculate delta time
 
   // TODO use bind() or something to clean up all these `app.core`s
   init: function () {
-    console.log("init called " + app.core.level)
     //Create the renderer
-    app.core.renderer = new PIXI.WebGLRenderer(256, 256)
+    var renderer = new PIXI.WebGLRenderer(256, 256)
+    app.core.renderer = renderer
 
     app.core.stage = new PIXI.Container()
 
     //Add the canvas to the HTML document
-    document.body.appendChild(app.core.renderer.view)
+    document.body.appendChild(renderer.view)
 
-    app.core.renderer.view.style.position = 'absolute'
-    app.core.renderer.view.style.display = 'block'
-    app.core.renderer.autoResize = true
+    renderer.view.style.position = 'absolute'
+    renderer.view.style.display = 'block'
+    renderer.autoResize = true
 
     // TODO: resize when window resizes
-    app.core.renderer.resize(window.innerWidth, window.innerHeight)
+    renderer.resize(window.innerWidth, window.innerHeight)
 
-    app.core.renderer.backgroundColor = app.palette.primary[0]
+    renderer.backgroundColor = app.palette.primary[0]
 
-    app.core.level = new Level(10, 7)
+    app.core.screen = new GameScreen(10, 7)
 
     app.core.lastTime = Date.now()
     app.core.gameLoop()
@@ -76,11 +76,13 @@ app.core = {
     // trivial demos, so I'm going for this more stateless implementation.
     // If it turns out to be too slow we can reconsider this approach. - Ben
     app.core.stage.removeChildren()
-    app.core.level.render(app.core.stage)
+    app.core.screen.render(app.core.stage)
+
+    // this is when everything is actually rendered to the screen
     app.core.renderer.render(app.core.stage)
   },
 
   update: function(dt) {
-    app.core.level.update(dt)
+    app.core.screen.update(dt)
   }
 }
