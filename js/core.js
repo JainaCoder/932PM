@@ -21,6 +21,12 @@ app.core = {
     var renderer = new PIXI.WebGLRenderer(256, 256)
     app.core.renderer = renderer
 
+
+    app.core.mspfText = new PIXI.Text('[no mspf data yet]',{fontFamily : 'Arial', fontSize: 24, fill : 0xff1010, align : 'center'})
+    app.core.mspfText.x = 50
+    app.core.mspfText.y = window.innerHeight - 50
+    app.core.mspfTick = 0
+
     app.core.stage = new PIXI.Container()
 
     //Add the canvas to the HTML document
@@ -126,11 +132,19 @@ app.core = {
     app.core.stage.removeChildren()
     app.core.screen.render(app.core.stage)
 
+    app.core.stage.addChild(app.core.mspfText)
+
     // this is when everything is actually rendered to the screen
     app.core.renderer.render(app.core.stage)
   },
 
   update: function(dt) {
     app.core.screen.update(dt)
+
+    app.core.mspfTick += dt
+    if (app.core.mspfTick > 1.0) {
+      app.core.mspfTick = 0
+      app.core.mspfText.text = dt + " mspf"
+    }
   }
 }

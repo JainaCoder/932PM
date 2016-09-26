@@ -14,8 +14,7 @@ window.GameScreen = (function() {
 
   GameScreen.prototype.render = function(stage) {
     this.level.render(stage)
-
-    stage.setTransform(0, 0, 1, 1) // TODO
+    // UI rendering could happen here? Or maybe it should be in the level?
   }
 
   GameScreen.prototype.onKeyUp = function(event) {
@@ -27,11 +26,15 @@ window.GameScreen = (function() {
   }
 
   Screen.prototype.onMouseUp = function(event) {
-    this.level.entities.push(new DemoEntity(event.offsetX, event.offsetY))
+    this.level.onMouseUp(event)
   }
 
-  Screen.prototype.onMouseDown = function(event) { }
-  Screen.prototype.onMouseMove = function(event) { }
+  Screen.prototype.onMouseDown = function(event) {
+    this.level.onMouseDown(event)
+  }
+  Screen.prototype.onMouseMove = function(event) {
+    this.level.onMouseMove(event)
+  }
 
   return GameScreen
 }())

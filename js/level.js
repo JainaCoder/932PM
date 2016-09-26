@@ -1,22 +1,34 @@
 "use strict"
 
+var app = app || {}
+
 window.Level = (function() {
 
   // width and height are in tiles
   function Level(width, height){
     this.entities = []
-    // terrain is an array of arrays
+
+    // container for use in `render()`
+    this.container = new PIXI.Container()
+
     this.width = width
     this.height = height
+
+    // on-screen-pixels per tile
+    this.scale = 100
+
+    this.matrix = new PIXI.Matrix()
+
+    // terrain is an array of arrays
     this.terrain = []
     // fill terrain with air
     for (var x = 0; x < width; x++) {
       this.terrain.push([])
       for (var y = 0; y < height; y++){
-        var t = app.terrainEnums.AIR
+        var t = app.terrain.types.AIR
         // edge tiles are solid
         if (x === 0 || x === width - 1 || y === 0 || y === height - 1) {
-          t = app.terrainEnums.SOLID
+          t = app.terrain.types.SOLID
         }
         this.terrain[x][y] = t
       }
@@ -29,8 +41,8 @@ window.Level = (function() {
     for (var i = 0; i < 20; i++){
       this.entities.push(
         new DemoEntity(
-          Math.random() * window.innerWidth,
-          Math.random() * window.innerHeight
+          Math.random() * this.width,
+          Math.random() * this.height
         )
       )
     }
@@ -41,6 +53,20 @@ window.Level = (function() {
   }
 
   Level.prototype.onKeyDown = function(event) {
+
+  }
+
+  Level.prototype.onMouseUp = function(event) {
+    // convert event coordinates to level coordinates
+    // TODO
+    this.entities.push(new DemoEntity(event.offsetX / this.scale, event.offsetY / this.scale))
+  }
+
+  Level.prototype.onMouseDown = function(event) {
+
+  }
+
+  Level.prototype.onMouseMove = function(event) {
 
   }
 
@@ -56,17 +82,28 @@ window.Level = (function() {
     }
   }
 
+  // we're putting all PIXI.DisplayObject's into a PIXI.Container so that we can apply
+  // a matrix to all of them, seperate from any potential UI
   Level.prototype.render = function(stage) {
+    var container = this.container
+    container.removeChildren()
+
     for (var i = 0, l = this.entities.length; i < l; i++) {
-      this.entities[i].render(stage)
+      this.entities[i].render(container)
     }
-    // TODO: if we have a camera, we could cull the terrain off screen so it isn't
-    // rendered. Might not want to do that though, and might not be needed
+
+    // TODO: cull offscreen?
     for (var x = 0; x < this.width; x++) {
       for (var y = 0; y < this.height; y++) {
-        app.terrain.render(this.terrain[x][y], x, y, stage)
+        app.terrain.render(this.terrain[x][y], x, y, container)
       }
     }
+    container.setTransform(0,0,this.scale,this.scale)
+
+    // TODO if this is by reference, this doesn't need to be set every frame. Investigate.
+    // PIXI docs says its read-only
+    this.matrix = container.localTransform
+    stage.addChild(container)
   }
 
   return Level

@@ -1,5 +1,7 @@
 "use strict"
 
+var app = app || {}
+
 window.LoadingScreen = (function() {
   function LoadingScreen(){
 
@@ -22,7 +24,11 @@ window.LoadingScreen = (function() {
     // called once when all resources have loaded
     // this function could alternatively be passed to loader.load()
     loader.on('complete', function(loader, resources){
-      console.log("loading complete")
+      console.log("loading complete. Resources: ")
+      console.dir(resources)
+      app.assets = {}
+      app.assets.resources = resources
+      formSprites()
       app.core.switchScreen(new GameScreen(10, 7))
     })
 
@@ -32,13 +38,40 @@ window.LoadingScreen = (function() {
 
   }
 
+  // NOTE: You don't have to add something here to make it load, you can just add your own call to
+  // `loader.add()` in `queueAssets()`. This is just here for convenience.
+  var textures = [
+    'ground',
+    'solid'
+  ]
+
   function queueAssets(loader){
 
     // first arguement is the name the asset will have in the final `resources`
-    // object, and is not related to the filename
-    loader.add('ground', 'assets/ground.png')
-    loader.add('solid', 'assets/solid.png')
+    // object, and does not have to match the filename
+    // loader.add(name, path)
 
+    // this loops through the above 'textures' array to load them, setting their name
+    // as the same as their file name, and assuming all are under the `assets` directory
+    // and are png
+    for (var i = 0; i < textures.length; i++) {
+      console.log("adding " + textures[i] + " to loading queue")
+      loader.add(textures[i], 'assets/' + textures[i] + '.png')
+    }
+
+  }
+
+  // called after assets have been loaded, use this to form sprites from the loaded textures
+  // This may not be needed for every texture, but could be convenient for some
+  function formSprites(){
+    var resources = app.assets.resources
+    var sprites = {}
+
+    sprites.ground = new PIXI.Sprite(resources.ground.texture)
+    sprites.ground.width = 1
+    sprites.ground.height = 1
+
+    app.assets.sprites = sprites
   }
 
   // GameScreen is a subclass of Screen

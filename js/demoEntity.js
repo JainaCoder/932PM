@@ -7,7 +7,7 @@ window.DemoEntity = (function() {
     // https://pixijs.github.io/docs/PIXI.Graphics.html
     var graphics = new PIXI.Graphics()
     this.points = Math.floor(Math.random() * 5) + 3
-    this.radius = Math.random() * 100 + 30
+    this.radius = Math.random() * 1 + 0.2
 
     graphics.beginFill(app.palette.tertiary[Math.floor(Math.random() * app.palette.tertiary.length)])
     graphics.moveTo(this.radius, 0)
@@ -25,7 +25,7 @@ window.DemoEntity = (function() {
     this.img.rotation = Math.random() * Math.PI * 2
 
     this.rotSpeed = Math.random() * Math.random() * 1.5 + 0.2
-    this.speed = Math.random() * 100 + 5
+    this.speed = Math.random() * 1 + 0.1
     this.dir = Math.random() * Math.PI * 2
 
   }
