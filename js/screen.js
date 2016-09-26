@@ -1,7 +1,3 @@
-// We probably don't actually need this code, it'd only really be needed if all screens
-// need to share some functionality. That said, it gives us a clear description of what
-// other screens should look like
-
 "use strict"
 
 window.Screen = (function() {
@@ -9,6 +5,11 @@ window.Screen = (function() {
 
   Screen.prototype.update = function(dt) { }
   Screen.prototype.render = function(stage) { }
+  Screen.prototype.onKeyUp = function(event) { }
+  Screen.prototype.onKeyDown = function(event) { }
+  Screen.prototype.onMouseUp = function(event) { }
+  Screen.prototype.onMouseDown = function(event) { }
+  Screen.prototype.onMouseMove = function(event) { }
 
   return Screen
 }())

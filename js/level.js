@@ -26,7 +26,7 @@ window.Level = (function() {
   }
 
   function populateLevel(){
-    for (var i = 0; i < 200; i++){
+    for (var i = 0; i < 20; i++){
       this.entities.push(
         new DemoEntity(
           Math.random() * window.innerWidth,
@@ -34,6 +34,14 @@ window.Level = (function() {
         )
       )
     }
+  }
+
+  Level.prototype.onKeyUp = function(event) {
+
+  }
+
+  Level.prototype.onKeyDown = function(event) {
+
   }
 
   Level.prototype.update = function(dt) {

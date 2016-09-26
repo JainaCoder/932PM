@@ -38,6 +38,27 @@ app.core = {
     app.core.screen = new LoadingScreen()
     // app.core.screen = new GameScreen(10, 7)
 
+    document.addEventListener('keydown', function(event) {
+      app.core.onKeyDown(event)
+    }, false)
+
+    document.addEventListener('keyup', function(event) {
+      app.core.onKeyUp(event)
+    }, false)
+
+    // TODO convert event to x,y ?
+    document.addEventListener('mousedown', function(event) {
+      app.core.onMouseDown(event)
+    }, false)
+
+    document.addEventListener('mousemove', function(event) {
+      app.core.onMouseMove(event)
+    }, false)
+
+    document.addEventListener('mouseup', function(event) {
+      app.core.onMouseUp(event)
+    }, false)
+
     app.core.lastTime = Date.now()
     app.core.gameLoop()
   },
@@ -46,6 +67,26 @@ app.core = {
   // do screen changes through here instead of doing it manually
   switchScreen: function (newScreen) {
     app.core.screen = newScreen
+  },
+
+  onKeyUp: function (event) {
+    app.core.screen.onKeyUp(event)
+  },
+
+  onKeyDown: function (event) {
+    app.core.screen.onKeyDown(event)
+  },
+
+  onMouseUp: function (event) {
+    app.core.screen.onMouseUp(event)
+  },
+
+  onMouseDown: function (event) {
+    app.core.screen.onMouseDown(event)
+  },
+
+  onMouseMove: function (event) {
+    app.core.screen.onMouseMove(event)
   },
 
   gameLoop: function () {

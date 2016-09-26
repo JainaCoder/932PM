@@ -2,7 +2,6 @@
 
 window.GameScreen = (function() {
   function GameScreen(width, height){
-    console.log("GameScreen constructor called")
     this.level = new Level(width, height)
   }
 
@@ -15,7 +14,24 @@ window.GameScreen = (function() {
 
   GameScreen.prototype.render = function(stage) {
     this.level.render(stage)
+
+    stage.setTransform(0, 0, 1, 1) // TODO
   }
+
+  GameScreen.prototype.onKeyUp = function(event) {
+    this.level.onKeyUp(event)
+  }
+
+  GameScreen.prototype.onKeyDown = function(event) {
+    this.level.onKeyDown(event)
+  }
+
+  Screen.prototype.onMouseUp = function(event) {
+    this.level.entities.push(new DemoEntity(event.offsetX, event.offsetY))
+  }
+
+  Screen.prototype.onMouseDown = function(event) { }
+  Screen.prototype.onMouseMove = function(event) { }
 
   return GameScreen
 }())

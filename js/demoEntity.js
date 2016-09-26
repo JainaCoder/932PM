@@ -24,7 +24,7 @@ window.DemoEntity = (function() {
     this.img.position.y = yLoc
     this.img.rotation = Math.random() * Math.PI * 2
 
-    this.rotSpeed = Math.random() * Math.random() * 1.5 + 0.2 + 15
+    this.rotSpeed = Math.random() * Math.random() * 1.5 + 0.2
     this.speed = Math.random() * 100 + 5
     this.dir = Math.random() * Math.PI * 2
 
@@ -45,11 +45,9 @@ window.DemoEntity = (function() {
 
   Entity.prototype.alive = function(renderer) {
     var position = this.img.position
-    // Makes them disapear when their centerpoint is over the edge
-    // of the screen, if we wanted it to look seamless, we'd account
-    // for the radius, but this is good for seeing that it actually works
-    return position.x > 0 && position.x < window.innerWidth &&
-      position.y > 0 && position.y < window.innerHeight
+    var radius = this.radius
+    return position.x > -radius && position.x < window.innerWidth + radius &&
+      position.y > -radius && position.y < window.innerHeight + radius
   }
 
   return DemoEntity
