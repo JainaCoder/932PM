@@ -9,7 +9,7 @@ window.DemoEntity = (function() {
     this.points = Math.floor(Math.random() * 5) + 3
     this.radius = Math.random() * 100 + 30
 
-    graphics.beginFill(app.palette.tertiary[0])
+    graphics.beginFill(app.palette.tertiary[Math.floor(Math.random() * app.palette.tertiary.length)])
     graphics.moveTo(this.radius, 0)
     for (var i = 0; i < this.points; i++){
       var theta = Math.PI * 2 / this.points * i
@@ -24,7 +24,7 @@ window.DemoEntity = (function() {
     this.img.position.y = yLoc
     this.img.rotation = Math.random() * Math.PI * 2
 
-    this.rotSpeed = Math.random() * Math.random() * 1.5 + 0.2
+    this.rotSpeed = Math.random() * Math.random() * 1.5 + 0.2 + 15
     this.speed = Math.random() * 100 + 5
     this.dir = Math.random() * Math.PI * 2
 

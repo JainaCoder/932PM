@@ -2,14 +2,29 @@
 
 window.Level = (function() {
 
-  function Level(){
+  // width and height are in tiles
+  function Level(width, height){
     this.entities = []
+    // terrain is an array of arrays
+    this.terrain = []
+    // fill terrain with air
+    for (var x = 0; x < width; x++) {
+      this.terrain.push([])
+      for (var y = 0; y < height; y++){
+        var t = app.terrain.AIR
+        // edge tiles are solid
+        if (x === 0 || x === width - 1 || y === 0 || y === height - 1) {
+          t = app.terrain.SOLID
+        }
+        this.terrain[x][y] = t
+      }
+    }
+
     populateLevel.bind(this)()
   }
 
   function populateLevel(){
-    console.log("populatin da level")
-    for (var i = 0; i < 20; i++){
+    for (var i = 0; i < 200; i++){
       this.entities.push(
         new DemoEntity(
           Math.random() * window.innerWidth,
@@ -17,7 +32,6 @@ window.Level = (function() {
         )
       )
     }
-    console.log("level got dem " + this.entities.length + " entities")
   }
 
   Level.prototype.update = function(dt) {

@@ -2,13 +2,6 @@
 
 var app = app || {}
 
-// TODO: team, do we want to leave this in core.js, or move it to its own file?
-app.palette = {
-  //          0           1          2          3          4
-  primary:   [ 0x4E1950, 0x79457B, 0x5F2C61, 0x380A39, 0x210023],
-  secondary: [ 0x2E2154, 0x5C4E82, 0x423466, 0x1C103C, 0x0D0424],
-  tertiary:  [ 0x75252E, 0xB5656E, 0x8F414A, 0x540F17, 0x330006],
-}
 
 app.core = {
   // https://pixijs.github.io/docs/PIXI.WebGLRenderer.html
@@ -42,7 +35,7 @@ app.core = {
 
     app.core.renderer.backgroundColor = app.palette.primary[0]
 
-    app.core.level = new Level()
+    app.core.level = new Level(10, 7)
 
     app.core.lastTime = Date.now()
     app.core.gameLoop()
