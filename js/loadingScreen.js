@@ -8,6 +8,8 @@ window.LoadingScreen = (function() {
     // documentation for the loader is pretty poor :(
     var loader = PIXI.loader
 
+    PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST
+
     // called once per file, regardless of if it loaded successfully
     //loader.on('progress', function(loader, resource){ })
 
@@ -26,10 +28,8 @@ window.LoadingScreen = (function() {
     loader.on('complete', function(loader, resources){
       console.log("loading complete. Resources: ")
       console.dir(resources)
-      app.assets = {}
-      app.assets.resources = resources
-      formSprites()
-      app.core.switchScreen(new GameScreen(10, 7))
+      app.assets = resources
+      app.core.switchScreen(new GameScreen(14, 10))
     })
 
     queueAssets(loader)
@@ -59,19 +59,6 @@ window.LoadingScreen = (function() {
       loader.add(textures[i], 'assets/' + textures[i] + '.png')
     }
 
-  }
-
-  // called after assets have been loaded, use this to form sprites from the loaded textures
-  // This may not be needed for every texture, but could be convenient for some
-  function formSprites(){
-    var resources = app.assets.resources
-    var sprites = {}
-
-    sprites.ground = new PIXI.Sprite(resources.ground.texture)
-    sprites.ground.width = 1
-    sprites.ground.height = 1
-
-    app.assets.sprites = sprites
   }
 
   // GameScreen is a subclass of Screen

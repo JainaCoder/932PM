@@ -2,28 +2,19 @@
 
 var app = app || {}
 
-// right now we're storing terrain in level just as enum values, so they cannot have their own
-// individual state, which is probs fine
+window.TerrainTile = (function() {
+  function TerrainTile(xLoc, yLoc, texture){
+    this.sprite = new PIXI.Sprite(texture)
+    this.sprite.x = xLoc
+    this.sprite.y = yLoc
+    this.sprite.width = 1
+    this.sprite.height = 1
 
-app.terrain = {
-
-  // basicallly just an enum for level terrain
-  types: {
-    AIR: 0,
-    SOLID: 1,
-  },
-
-  render: function(terrainEnum, xLoc, yLoc, stage) {
-    switch(terrainEnum) {
-    case app.terrain.types.AIR:
-      return // we dont draw air :S
-    case app.terrain.types.SOLID:
-      var ground = app.assets.sprites.ground
-      ground.x = xLoc
-      ground.y = yLoc
-      stage.addChild(ground)
-      return
-    }
+     // NOTE: collision detection should check for this
+    this.solid = true
   }
 
-}
+  TerrainTile.prototype.render = function(stage) { stage.addChild(this.sprite) }
+
+  return TerrainTile
+}())

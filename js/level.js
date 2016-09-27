@@ -25,10 +25,10 @@ window.Level = (function() {
     for (var x = 0; x < width; x++) {
       this.terrain.push([])
       for (var y = 0; y < height; y++){
-        var t = app.terrain.types.AIR
+        var t = null
         // edge tiles are solid
         if (x === 0 || x === width - 1 || y === 0 || y === height - 1) {
-          t = app.terrain.types.SOLID
+          t = new TerrainTile(x, y, app.assets.ground.texture)
         }
         this.terrain[x][y] = t
       }
@@ -95,7 +95,10 @@ window.Level = (function() {
     // TODO: cull offscreen?
     for (var x = 0; x < this.width; x++) {
       for (var y = 0; y < this.height; y++) {
-        app.terrain.render(this.terrain[x][y], x, y, container)
+      //  console.log("render at " + x + " " + y)
+        if (this.terrain[x][y]){
+          this.terrain[x][y].render(container)
+        }
       }
     }
     container.setTransform(0,0,this.scale,this.scale)
