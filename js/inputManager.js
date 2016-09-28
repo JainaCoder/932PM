@@ -55,7 +55,6 @@ app.input = {
   },
 
   onKeyDown: function(event) {
-    console.log("keyDown: " + event.keyCode)
     this.keyMap[event.keyCode] = true;
   },
 

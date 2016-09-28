@@ -2,6 +2,8 @@
 
 var app = app || {};
 
+app.debug = false;
+
 app.core = {
   // https://pixijs.github.io/docs/PIXI.WebGLRenderer.html
   renderer: null,
@@ -96,7 +98,10 @@ app.core = {
     app.core.stage.removeChildren();
     app.core.screen.render(app.core.stage);
 
-    app.core.stage.addChild(app.core.mspfText);
+    // render miliseconds per frame
+    if (app.debug) {
+      app.core.stage.addChild(app.core.mspfText);
+    }
 
     // this is when everything is actually rendered to the screen
     app.core.renderer.render(app.core.stage);
@@ -105,10 +110,13 @@ app.core = {
   update: function(dt) {
     app.core.screen.update(dt);
 
-    app.core.mspfTick += dt;
-    if (app.core.mspfTick > 1.0) {
-      app.core.mspfTick = 0;
-      app.core.mspfText.text = dt + " mspf";
+    if (app.debug) {
+      app.core.mspfTick += dt;
+      if (app.core.mspfTick > 1.0) {
+        app.core.mspfTick = 0;
+        app.core.mspfText.text = dt + " mspf";
+      }
     }
+
   }
 };

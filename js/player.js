@@ -8,12 +8,17 @@ window.Player = (function() {
     this.body = new PIXI.Sprite(app.assets.ground.texture);
     this.body.width = 1;
     this.body.height = 1;
+    // sprite coordinates are based off their upper left corner, so if we want their center
+    // to be on the player's center, we have to move them up and to the left
+    this.body.x = -this.body.width/2;
+    this.body.y = -this.body.height/2;
 
     // by putting everything in a container, the player image could have multiple parts and
     // we should be able to apply transformations to all of them at once
     // maybe we won't end up using that, and we can remove this (TODO)
     this.img = new PIXI.Container();
     this.img.addChild(this.body);
+
 
     this.img.position.x = xLoc;
     this.img.position.y = yLoc;
@@ -36,7 +41,7 @@ window.Player = (function() {
     } else if (keyMap[68]) { // D
       this.img.position.x += this.speed * dt;
     }
-    // NOTE: movement axes should not be independent! This is just set up as a shitty placeholder! 
+    // NOTE: movement axes should not be independent! This is just set up as a shitty placeholder!
     if (keyMap[87]) { // W
       this.img.position.y -= this.speed * dt;
     } else if (keyMap[83]) { // S
@@ -52,6 +57,14 @@ window.Player = (function() {
   // which may not be how we want to determine player death, so that should be handled elsewhere
   Player.prototype.alive = function(renderer) {
     return true;
+  };
+
+  // TODO: should these be properties of all `Entity`s?
+  Player.prototype.getX = function() {
+    return this.img.position.x;
+  };
+  Player.prototype.getY = function() {
+    return this.img.position.y;
   };
 
   return Player;

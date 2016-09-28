@@ -21,9 +21,11 @@ window.Level = (function() {
 
     // on-screen-pixels per tile
     // NOTE: camera work is still in progress, expect this to change
-    this.zoom = 100;
-
-    this.matrix = new PIXI.Matrix();
+    this.camera = {
+      zoom: 100,
+      x: this.player.getX(),
+      y: this.player.getY(),
+    };
 
     // terrain is an array of arrays
     this.terrain = [];
@@ -59,8 +61,18 @@ window.Level = (function() {
 
   Level.prototype.update = function(dt) {
     this.time += dt;
-    // TODO: camera!
-    // this.zoom = 70 + Math.sin(this.time/5) * 5;
+
+    // Update camera
+    var camera = this.camera;
+    var player = this.player;
+    // zooming in and out just to show that it works
+    camera.zoom = 70 + Math.sin(this.time/3) * 15;
+    var zoom = camera.zoom;
+    // Move camera 90% towards player every second on each axis
+    // TODO: deadzone?
+    camera.x += (player.getX() - camera.x)  * 0.90 * dt;
+    camera.y += (player.getY() - camera.y) * 0.90 * dt;
+
     var entities = this.entities;
     for (var i = 0; i < entities.length; i++) {
       entities[i].update(dt);
@@ -72,6 +84,8 @@ window.Level = (function() {
     }
 
   };
+
+
 
   // we're putting all PIXI.DisplayObject's into a PIXI.Container so that we can apply
   // a matrix to all of them, seperate from any potential UI
@@ -94,7 +108,8 @@ window.Level = (function() {
     }
 
     // TODO this is totally wrong
-    container.setTransform(0, 0, this.zoom,this.zoom);
+    var zoom = this.camera.zoom;
+    container.setTransform(-this.camera.x * zoom + window.innerWidth/2, -this.camera.y * zoom + window.innerHeight/2, zoom, zoom);
 
     // TODO if this is by reference, this doesn't need to be set every frame. Investigate.
     // PIXI docs says its read-only

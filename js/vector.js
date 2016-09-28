@@ -69,4 +69,9 @@ function Vector(x, y) {
     return this.clone.normalize();
   };
 
+  //return a PIXI.Point with this vector's x and y
+  this.toPixiPoint = function() {
+    return new PIXI.Point(this.x, this.y);
+  };
+
 }
