@@ -1,6 +1,6 @@
 // Entity represents anything which has to update and has to be drawn
 
-"use strict"
+"use strict";
 
 window.Entity = (function() {
   // if we ever add arguments to this constructor, we'll want to
@@ -14,14 +14,14 @@ window.Entity = (function() {
   // The only time these functions should actually be called otherwise
   // is if we have a subclass which does not need to implement one of
   // them
-  Entity.prototype.update = function(dt) { }
-  Entity.prototype.render = function(stage) { }
+  Entity.prototype.update = function(dt) { };
+  Entity.prototype.render = function(stage) { };
 
   // subclasses can override this to signal when they should
   // be removed from the level
   Entity.prototype.alive = function(renderer) {
-    return true
-  }
+    return true;
+  };
 
-  return Entity
-}())
+  return Entity;
+}());

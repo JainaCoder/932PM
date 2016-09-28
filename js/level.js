@@ -1,96 +1,86 @@
-"use strict"
+"use strict";
 
-var app = app || {}
+var app = app || {};
 
 window.Level = (function() {
 
   // width and height are in tiles
   function Level(width, height){
-    this.entities = []
-    this.player = new Player(width/2, height/2)
+    this.entities = [];
+    this.player = new Player(width/2, height/2);
+    this.entities.push(this.player);
 
     // container for use in `render()`
-    this.container = new PIXI.Container()
+    this.container = new PIXI.Container();
 
-    this.width = width
-    this.height = height
+    this.width = width;
+    this.height = height;
+
+    // using this to track total time the level has been running
+    this.time = 0;
 
     // on-screen-pixels per tile
-    this.scale = 100
+    // NOTE: camera work is still in progress, expect this to change
+    this.zoom = 100;
 
-    this.matrix = new PIXI.Matrix()
+    this.matrix = new PIXI.Matrix();
 
     // terrain is an array of arrays
-    this.terrain = []
+    this.terrain = [];
     // fill terrain with air
     for (var x = 0; x < width; x++) {
-      this.terrain.push([])
+      this.terrain.push([]);
       for (var y = 0; y < height; y++){
-        var t = null
+        // empty tiles are null
+        var t = null;
         // edge tiles are solid
         if (x === 0 || x === width - 1 || y === 0 || y === height - 1) {
-          t = new TerrainTile(x, y, app.assets.solid.texture)
+          t = new TerrainTile(x, y, app.assets.solid.texture);
         }
-        this.terrain[x][y] = t
+        this.terrain[x][y] = t;
       }
     }
 
-    populateLevel.bind(this)()
+    populateLevel.bind(this)();
   }
+
 
   function populateLevel(){
     for (var i = 0; i < 20; i++){
       this.entities.push(
         new DemoEntity(
+          this,
           Math.random() * this.width,
           Math.random() * this.height
         )
-      )
+      );
     }
-  }
-
-  Level.prototype.onKeyUp = function(event) {
-
-  }
-
-  Level.prototype.onKeyDown = function(event) {
-
-  }
-
-  Level.prototype.onMouseUp = function(event) {
-    // convert event coordinates to level coordinates
-    // TODO
-    this.entities.push(new DemoEntity(event.offsetX / this.scale, event.offsetY / this.scale))
-  }
-
-  Level.prototype.onMouseDown = function(event) {
-
-  }
-
-  Level.prototype.onMouseMove = function(event) {
-
   }
 
   Level.prototype.update = function(dt) {
-    var entities = this.entities
+    this.time += dt;
+    // TODO: camera!
+    // this.zoom = 70 + Math.sin(this.time/5) * 5;
+    var entities = this.entities;
     for (var i = 0; i < entities.length; i++) {
-      entities[i].update(dt)
+      entities[i].update(dt);
       // if the entity is inactive, remove it
       if (!entities[i].alive()){
-        entities.splice(i,1)
-        i--
+        entities.splice(i,1);
+        i--;
       }
     }
-  }
+
+  };
 
   // we're putting all PIXI.DisplayObject's into a PIXI.Container so that we can apply
   // a matrix to all of them, seperate from any potential UI
   Level.prototype.render = function(stage) {
-    var container = this.container
-    container.removeChildren()
+    var container = this.container;
+    container.removeChildren();
 
     for (var i = 0, l = this.entities.length; i < l; i++) {
-      this.entities[i].render(container)
+      this.entities[i].render(container);
     }
 
     // TODO: cull offscreen?
@@ -98,17 +88,20 @@ window.Level = (function() {
       for (var y = 0; y < this.height; y++) {
       //  console.log("render at " + x + " " + y)
         if (this.terrain[x][y]){
-          this.terrain[x][y].render(container)
+          this.terrain[x][y].render(container);
         }
       }
     }
-    container.setTransform(0,0,this.scale,this.scale)
+
+    // TODO this is totally wrong
+    container.setTransform(0, 0, this.zoom,this.zoom);
 
     // TODO if this is by reference, this doesn't need to be set every frame. Investigate.
     // PIXI docs says its read-only
-    this.matrix = container.localTransform
-    stage.addChild(container)
-  }
+    // Also, we arent actually doing anything with this yet.
+    this.matrix = container.localTransform;
+    stage.addChild(container);
+  };
 
-  return Level
-}())
+  return Level;
+}());
