@@ -6,9 +6,7 @@ window.Entity = (function() {
   // if we ever add arguments to this constructor, we'll want to
   // update any subclasses and add `Entity.call(this, ...args)`
   // to their constructors. I think.
-  function Entity(){
-    console.log("entity constructor called")
-  }
+  function Entity(){  }
 
   // we can probably think of these as abstract functions.
   // if eventually we need them to have real functionality, we'll

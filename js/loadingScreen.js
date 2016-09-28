@@ -1,7 +1,5 @@
 "use strict"
 
-var app = app || {}
-
 window.LoadingScreen = (function() {
   function LoadingScreen(){
 

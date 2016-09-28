@@ -2,7 +2,6 @@
 
 window.DemoEntity = (function() {
   function DemoEntity(xLoc, yLoc){
-    console.log("DemoEntity constructor called")
 
     // https://pixijs.github.io/docs/PIXI.Graphics.html
     var graphics = new PIXI.Graphics()

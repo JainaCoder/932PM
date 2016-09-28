@@ -7,6 +7,7 @@ window.Level = (function() {
   // width and height are in tiles
   function Level(width, height){
     this.entities = []
+    this.player = new Player(width/2, height/2)
 
     // container for use in `render()`
     this.container = new PIXI.Container()
@@ -28,7 +29,7 @@ window.Level = (function() {
         var t = null
         // edge tiles are solid
         if (x === 0 || x === width - 1 || y === 0 || y === height - 1) {
-          t = new TerrainTile(x, y, app.assets.ground.texture)
+          t = new TerrainTile(x, y, app.assets.solid.texture)
         }
         this.terrain[x][y] = t
       }
