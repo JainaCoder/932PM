@@ -44,15 +44,11 @@ window.Tangible = (function() {
   };
 
   // copied this code over from the game I made first year in C#
-  Tangible.prototype.testCollision = function(otherTangible){
+  Tangible.prototype.testCollision = function(otherX, otherY, otherWidth, otherHeight){
     var x = this.getX();
     var y = this.getY();
-    var otherX = otherTangible.getX();
-    var otherY = otherTangible.getY();
     var width = this.width;
     var height = this.height;
-    var otherWidth = otherTangible.width;
-    var otherHeight = otherTangible.height;
 
     // Check if there's a collision at all
     if (!(
@@ -102,6 +98,10 @@ window.Tangible = (function() {
 
   Tangible.prototype.onCollide = function(otherTangible) {
     // called when this tangible collides with another tangible
+  };
+
+  Tangible.prototype.onCollideTerrain = function(terrain) {
+    // called when this tangible collides with terrain
   };
 
   return Tangible;

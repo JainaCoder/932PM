@@ -15,14 +15,14 @@ window.Level = (function() {
     var playerClone = new Player(width/2 + 2, height/2 + 2, this);
     playerClone.update = function(dt){
       var keyMap = app.input.keyMap;
-      if (keyMap[37]) { // A
+      if (keyMap[37]) { // left arrow
         this.img.position.x -= this.speed * dt;
-      } else if (keyMap[39]) { // D
+      } else if (keyMap[39]) { // right arrow
         this.img.position.x += this.speed * dt;
       }
-      if (keyMap[38]) { // W
+      if (keyMap[38]) { // up arrow
         this.img.position.y -= this.speed * dt;
-      } else if (keyMap[40]) { // S
+      } else if (keyMap[40]) { // down arrow
         this.img.position.y += this.speed * dt;
       }
     };
@@ -95,24 +95,49 @@ window.Level = (function() {
     tickThrough(this.tangibles, dt);
     tickThrough(this.intangibles, dt);
 
-    // collision detection among tangibles
+    // collision detection
 
     for (var i = 0, l = this.tangibles.length; i < l; i++){
       var t1 = this.tangibles[i];
       for (var j = i + 1; j < l; j++){
         var t2 = this.tangibles[j];
 
-        var collision = t1.testCollision(t2);
+        var collision = t1.testCollision(t2.getX(), t2.getY(), t2.width, t2.height);
         if (collision){
           t1.onCollide(t2);
           t2.onCollide(t1);
-          // TODO: weighted
           var w1 = t1.weight;
           var w2 = t2.weight;
           t1.moveBy(collision.scaled(w2/(w1 + w2)));
           t2.moveBy(collision.scaled(-w1/(w1 + w2)));
         }
       }
+
+      var x1 = t1.getX();
+      var y1 = t1.getY();
+
+      // against terrain
+      var minGridX = Math.max(0, Math.floor(x1 - t1.width/2 + 0.5));
+      var minGridY = Math.max(0, Math.floor(y1 - t1.height/2 + 0.5));
+      var maxGridX = Math.min(this.width - 1, Math.floor(x1 + t1.width/2 + 0.5));
+      var maxGridY = Math.min(this.height -1, Math.floor(y1 + t1.height/2 + 0.5));
+
+      for (var x = minGridX; x <= maxGridX; x++){
+        for (var y = minGridY; y <= maxGridY; y++){
+          var ter = this.terrain[x][y];
+          if ( ter && ter.solid){
+            // TODO: if some terrain is only partial squares, or has other properties,
+            // we'll want to address that here
+            var col = t1.testCollision(x, y, 1, 1);
+            if (col){
+              t1.onCollideTerrain(ter);
+              ter.onCollide(t1);
+              t1.moveBy(col);
+            }
+          }
+        }
+      }
+
     }
 
     // collision detection of tangibles against terrain
@@ -149,21 +174,15 @@ window.Level = (function() {
     // TODO: cull offscreen?
     for (var x = 0; x < this.width; x++) {
       for (var y = 0; y < this.height; y++) {
-      //  console.log("render at " + x + " " + y)
         if (this.terrain[x][y]){
           this.terrain[x][y].render(container);
         }
       }
     }
 
-    // TODO this is totally wrong
     var zoom = this.camera.zoom;
     container.setTransform(-this.camera.x * zoom + window.innerWidth/2, -this.camera.y * zoom + window.innerHeight/2, zoom, zoom);
 
-    // TODO if this is by reference, this doesn't need to be set every frame. Investigate.
-    // PIXI docs says its read-only
-    // Also, we arent actually doing anything with this yet.
-    this.matrix = container.localTransform;
     stage.addChild(container);
   };
 
