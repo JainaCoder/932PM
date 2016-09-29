@@ -1,12 +1,13 @@
-// Entity represents anything which has to update and has to be drawn
+// Entity represents objects with a location, an image, and an update step
 
 "use strict";
 
 window.Entity = (function() {
-  // if we ever add arguments to this constructor, we'll want to
-  // update any subclasses and add `Entity.call(this, ...args)`
-  // to their constructors. I think.
-  function Entity(){  }
+  function Entity(xLoc, yLoc){
+    this.img = new PIXI.Container();
+    this.img.position.x = xLoc;
+    this.img.position.y = yLoc;
+  }
 
   // we can probably think of these as abstract functions.
   // if eventually we need them to have real functionality, we'll
@@ -15,12 +16,35 @@ window.Entity = (function() {
   // is if we have a subclass which does not need to implement one of
   // them
   Entity.prototype.update = function(dt) { };
-  Entity.prototype.render = function(stage) { };
+  Entity.prototype.render = function(stage) {
+    stage.addChild(this.img);
+  };
 
   // subclasses can override this to signal when they should
   // be removed from the level
   Entity.prototype.alive = function(renderer) {
     return true;
+  };
+
+  Entity.prototype.getX = function() {
+    return this.img.position.x;
+  };
+  Entity.prototype.getY = function() {
+    return this.img.position.y;
+  };
+
+  Entity.prototype.getPos = function() {
+    return new Vector(this.img.position.x, this.img.position.y);
+  };
+
+  Entity.prototype.setPos = function(pos) {
+    this.img.position.x = pos.x;
+    this.img.position.y = pos.y;
+  };
+
+  Entity.prototype.moveBy = function(displacement) {
+    this.img.position.x += displacement.x;
+    this.img.position.y += displacement.y;
   };
 
   return Entity;

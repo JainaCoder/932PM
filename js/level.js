@@ -6,9 +6,28 @@ window.Level = (function() {
 
   // width and height are in tiles
   function Level(width, height){
-    this.entities = [];
-    this.player = new Player(width/2, height/2);
-    this.entities.push(this.player);
+    this.intangibles = [];
+    this.tangibles = [];
+    this.player = new Player(width/2, height/2, this);
+    this.tangibles.push(this.player);
+
+    // TODO: delete this, its just for testing
+    var playerClone = new Player(width/2 + 2, height/2 + 2, this);
+    playerClone.update = function(dt){
+      var keyMap = app.input.keyMap;
+      if (keyMap[37]) { // A
+        this.img.position.x -= this.speed * dt;
+      } else if (keyMap[39]) { // D
+        this.img.position.x += this.speed * dt;
+      }
+      if (keyMap[38]) { // W
+        this.img.position.y -= this.speed * dt;
+      } else if (keyMap[40]) { // S
+        this.img.position.y += this.speed * dt;
+      }
+    };
+
+    this.tangibles.push(playerClone);
 
     // container for use in `render()`
     this.container = new PIXI.Container();
@@ -49,7 +68,7 @@ window.Level = (function() {
 
   function populateLevel(){
     for (var i = 0; i < 20; i++){
-      this.entities.push(
+      this.intangibles.push(
         new DemoEntity(
           this,
           Math.random() * this.width,
@@ -73,7 +92,28 @@ window.Level = (function() {
     camera.x += (player.getX() - camera.x)  * 0.90 * dt;
     camera.y += (player.getY() - camera.y) * 0.90 * dt;
 
-    var entities = this.entities;
+    tickThrough(this.tangibles, dt);
+    tickThrough(this.intangibles, dt);
+
+    // collision detection
+
+    for (var i = 0, l = this.tangibles.length; i < l; i++){
+      var t1 = this.tangibles[i];
+      for (var j = i + 1; j < l; j++){
+        var t2 = this.tangibles[j];
+
+        var collision = t1.testCollision(t2);
+        if (collision){
+          t1.onCollide(t2);
+          t2.onCollide(t1);
+          t1.moveBy(collision);
+        }
+      }
+    }
+
+  };
+
+  function tickThrough(entities, dt){
     for (var i = 0; i < entities.length; i++) {
       entities[i].update(dt);
       // if the entity is inactive, remove it
@@ -82,10 +122,7 @@ window.Level = (function() {
         i--;
       }
     }
-
-  };
-
-
+  }
 
   // we're putting all PIXI.DisplayObject's into a PIXI.Container so that we can apply
   // a matrix to all of them, seperate from any potential UI
@@ -93,8 +130,12 @@ window.Level = (function() {
     var container = this.container;
     container.removeChildren();
 
-    for (var i = 0, l = this.entities.length; i < l; i++) {
-      this.entities[i].render(container);
+    for (var i = 0, l = this.tangibles.length; i < l; i++) {
+      this.tangibles[i].render(container);
+    }
+
+    for (i = 0, l = this.intangibles.length; i < l; i++) {
+      this.intangibles[i].render(container);
     }
 
     // TODO: cull offscreen?

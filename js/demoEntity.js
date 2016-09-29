@@ -2,6 +2,7 @@
 
 window.DemoEntity = (function() {
   function DemoEntity(level, xLoc, yLoc){
+    Entity.call(this, xLoc, yLoc);
 
     this.level = level;
 
@@ -18,11 +19,8 @@ window.DemoEntity = (function() {
     }
     graphics.endFill();
 
-    this.img = new PIXI.Container();
     this.img.addChild(graphics);
 
-    this.img.position.x = xLoc;
-    this.img.position.y = yLoc;
     this.img.rotation = Math.random() * Math.PI * 2;
 
     this.rotSpeed = Math.random() * Math.random() * 1.5 + 0.2;
@@ -44,7 +42,7 @@ window.DemoEntity = (function() {
     stage.addChild(this.img);
   };
 
-  Entity.prototype.alive = function(renderer) {
+  DemoEntity.prototype.alive = function(renderer) {
     var position = this.img.position;
     var radius = this.radius;
     return position.x > -radius && position.x < this.level.width + radius &&

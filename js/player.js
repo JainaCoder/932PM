@@ -2,26 +2,20 @@
 
 window.Player = (function() {
 
-  function Player(xLoc, yLoc){
+  function Player(xLoc, yLoc, level){
+    Tangible.call(this, xLoc, yLoc, 1, 1, level);
 
     // woo, placeholder
-    this.body = new PIXI.Sprite(app.assets.ground.texture);
-    this.body.width = 1;
-    this.body.height = 1;
+    var body = new PIXI.Sprite(app.assets.ground.texture);
+    this.body = body;
+    body.width = this.width;
+    body.height = this.height;
     // sprite coordinates are based off their upper left corner, so if we want their center
     // to be on the player's center, we have to move them up and to the left
-    this.body.x = -this.body.width/2;
-    this.body.y = -this.body.height/2;
+    body.x = -body.width/2;
+    body.y = -body.height/2;
 
-    // by putting everything in a container, the player image could have multiple parts and
-    // we should be able to apply transformations to all of them at once
-    // maybe we won't end up using that, and we can remove this (TODO)
-    this.img = new PIXI.Container();
-    this.img.addChild(this.body);
-
-
-    this.img.position.x = xLoc;
-    this.img.position.y = yLoc;
+    this.img.addChild(body);
 
     this.speed = 2;
 
@@ -29,10 +23,11 @@ window.Player = (function() {
 
   }
 
-  // Player is a subclass of Entity
-  Player.prototype = Object.create(Entity.prototype);
+  // Player is a subclass of Tangible
+  Player.prototype = Object.create(Tangible.prototype);
 
   Player.prototype.update = function(dt) {
+    Tangible.prototype.update.call(this, dt);
     var keyMap = app.input.keyMap;
     // TODO: magic numbers are probably not the way to go :/
     // Also this is shitty placeholder code to demonstrate input
@@ -49,22 +44,10 @@ window.Player = (function() {
     }
   };
 
-  Player.prototype.render = function(stage) {
-    stage.addChild(this.img);
-  };
-
   // NOTE: this is used by `level` to determine if an entity should be removed from the level,
   // which may not be how we want to determine player death, so that should be handled elsewhere
   Player.prototype.alive = function(renderer) {
     return true;
-  };
-
-  // TODO: should these be properties of all `Entity`s?
-  Player.prototype.getX = function() {
-    return this.img.position.x;
-  };
-  Player.prototype.getY = function() {
-    return this.img.position.y;
   };
 
   return Player;
