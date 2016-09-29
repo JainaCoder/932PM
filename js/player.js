@@ -3,7 +3,7 @@
 window.Player = (function() {
 
   function Player(xLoc, yLoc, level){
-    Tangible.call(this, xLoc, yLoc, 1, 1, level);
+    Tangible.call(this, xLoc, yLoc, 1, 1, 1, level);
 
     // woo, placeholder
     var body = new PIXI.Sprite(app.assets.ground.texture);

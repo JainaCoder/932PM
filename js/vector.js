@@ -36,16 +36,21 @@ function Vector(x, y) {
   };
 
   //Multiply this vector by a scalar
-  this.multiply = function(multInt) {
-    this.x *= multInt;
-    this.y *= multInt;
+  this.multiply = function(mult) {
+    this.x *= mult;
+    this.y *= mult;
     return this;
   };
 
+  //Return new vector scaled by a scalar  TODO: we cool with this name?
+  this.scaled = function(mult) {
+    return new Vector(this.x * mult, this.y * mult);
+  };
+
   //Divide this vector by a scalar
-  this.divide = function(divInt) {
-    this.x /= divInt;
-    this.y /= divInt;
+  this.divide = function(div) {
+    this.x /= div;
+    this.y /= div;
     return this;
   };
 

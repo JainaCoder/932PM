@@ -95,7 +95,7 @@ window.Level = (function() {
     tickThrough(this.tangibles, dt);
     tickThrough(this.intangibles, dt);
 
-    // collision detection
+    // collision detection among tangibles
 
     for (var i = 0, l = this.tangibles.length; i < l; i++){
       var t1 = this.tangibles[i];
@@ -106,10 +106,18 @@ window.Level = (function() {
         if (collision){
           t1.onCollide(t2);
           t2.onCollide(t1);
-          t1.moveBy(collision);
+          // TODO: weighted
+          var w1 = t1.weight;
+          var w2 = t2.weight;
+          t1.moveBy(collision.scaled(w2/(w1 + w2)));
+          t2.moveBy(collision.scaled(-w1/(w1 + w2)));
         }
       }
     }
+
+    // collision detection of tangibles against terrain
+    // TODO: use AABB of each tangible to check which grid spaces the box is in, check collision
+    // against only those terrain locations
 
   };
 

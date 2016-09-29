@@ -3,11 +3,13 @@
 "use strict";
 
 window.Tangible = (function() {
-  function Tangible(xLoc, yLoc, width, height, level){
+  function Tangible(xLoc, yLoc, width, height, weight, level){
     Entity.call(this, xLoc, yLoc);
     this.width = width;
     this.height = height;
     this.level = level;
+    // weight affects which tangible is pushed more in collision resolution
+    this.weight = weight;
     if (width === undefined) {
       console.log("error: no width passed to Tangible");
     }
