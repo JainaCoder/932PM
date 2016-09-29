@@ -7,8 +7,11 @@ window.Level = (function() {
   // width and height are in tiles
   function Level(mapData){
 
-    var height = mapData.length;
-    var width = height === 0 ? 0 : mapData[0].length;
+    console.log("creating level");
+    console.dir(mapData);
+
+    var height = mapData.height;
+    var width = mapData.width;
     this.width = width;
     this.height = height;
 
@@ -51,11 +54,11 @@ window.Level = (function() {
     this.terrain = [];
     // fill terrain with air
     for (var x = 0; x < width; x++) {
-      this.terrain.push([]);
+      this.terrain[x] = [];
       for (var y = 0; y < height; y++){
         var t = null;
-        if (mapData[y][x] === 1) {
-          t = new TerrainTile(x, y, app.assets.solid.texture);
+        if (mapData.terrain[x][y] !== null) {
+          t = new TerrainTile(x, y, {texture: 'solid'});
         }
         this.terrain[x][y] = t;
       }
@@ -173,13 +176,31 @@ window.Level = (function() {
       }
     }
 
+    // TODO: camera tracking should probably happen in GameScreen, not Level
     var zoom = this.camera.zoom;
     container.setTransform(-this.camera.x * zoom + window.innerWidth/2, -this.camera.y * zoom + window.innerHeight/2, zoom, zoom);
 
     stage.addChild(container);
   };
 
+  Level.prototype.save = function(){
+    console.log("Saving level");
+    var data = {
+      width: this.width,
+      height: this.height,
+    };
+    data.terrain = [];
+    for (var x = 0; x < this.width; x++) {
+      data.terrain[x] = [];
+      for (var y = 0; y < this.height; y++) {
+        data.terrain[x][y] = this.terrain[x][y] === null ? null : this.terrain[x][y].save();
+      }
+    }
 
+    console.dir(data);
+
+    downloadJSON(data, "save_" + Date.now() + ".json");
+  };
 
   return Level;
 }());

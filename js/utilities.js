@@ -13,16 +13,10 @@ function loadJSON(fileName, callback) {
 }
 
 
-function downloadMap(mapData, fileName) {
-  var prettyJSON = "[\n";
-  for (var y = 0, h = mapData.length; y < h; y++) {
-    prettyJSON += JSON.stringify(mapData[y]) + (y === h-1 ? '' : ',\n');
-  }
-  prettyJSON += "\n]";
-
+function downloadJSON(data, fileName) {
   // http://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
   var element = document.createElement('a');
-  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(prettyJSON));
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(data)));
   element.setAttribute('download', fileName);
 
   element.style.display = 'none';

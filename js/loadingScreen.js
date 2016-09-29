@@ -2,6 +2,7 @@
 
 window.LoadingScreen = (function() {
   function LoadingScreen(){
+    Screen.call(this); // not actually needed until there are args :/
 
     // documentation for the loader is pretty poor :(
     var loader = PIXI.loader;
@@ -26,12 +27,11 @@ window.LoadingScreen = (function() {
     // called once when all resources have loaded
     // this function could alternatively be passed to loader.load()
     loader.on('complete', function(loader, resources){
-      console.log("loading complete. Resources: ");
-      console.dir(resources);
+      console.log("loading complete");
       app.assets = resources;
 
       console.log("loading map");
-      loadJSON("maps/coolMap.json", function(response) {
+      loadJSON("maps/neato.json", function(response) {
         app.core.switchScreen(new GameScreen(JSON.parse(response)));
       });
 
@@ -64,7 +64,6 @@ window.LoadingScreen = (function() {
     // as the same as their file name, and assuming all are under the `assets` directory
     // and are png
     for (var i = 0; i < textures.length; i++) {
-      console.log("adding " + textures[i] + " to loading queue");
       loader.add(textures[i], 'assets/' + textures[i] + '.png');
     }
 
