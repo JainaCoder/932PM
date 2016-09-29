@@ -29,7 +29,13 @@ window.LoadingScreen = (function() {
       console.log("loading complete. Resources: ");
       console.dir(resources);
       app.assets = resources;
-      app.core.switchScreen(new GameScreen(14, 10));
+
+      console.log("loading map");
+      loadJSON("maps/coolMap.json", function(response) {
+        app.core.switchScreen(new GameScreen(JSON.parse(response)));
+      });
+
+
     });
 
     queueAssets(loader);

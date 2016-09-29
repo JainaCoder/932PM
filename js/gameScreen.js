@@ -1,9 +1,12 @@
 "use strict";
 
 window.GameScreen = (function() {
-  function GameScreen(width, height){
-    this.level = new Level(width, height);
+  function GameScreen(mapData){
+
+    this.level = new Level(mapData);
+
   }
+
 
   // GameScreen is a subclass of Screen
   GameScreen.prototype = Object.create(Screen.prototype);

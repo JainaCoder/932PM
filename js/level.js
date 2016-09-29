@@ -5,7 +5,13 @@ var app = app || {};
 window.Level = (function() {
 
   // width and height are in tiles
-  function Level(width, height){
+  function Level(mapData){
+
+    var height = mapData.length;
+    var width = height === 0 ? 0 : mapData[0].length;
+    this.width = width;
+    this.height = height;
+
     this.intangibles = [];
     this.tangibles = [];
     this.player = new Player(width/2, height/2, this);
@@ -32,16 +38,11 @@ window.Level = (function() {
     // container for use in `render()`
     this.container = new PIXI.Container();
 
-    this.width = width;
-    this.height = height;
-
     // using this to track total time the level has been running
     this.time = 0;
 
-    // on-screen-pixels per tile
-    // NOTE: camera work is still in progress, expect this to change
     this.camera = {
-      zoom: 100,
+      zoom: 100, // on-screen-pixels per tile
       x: this.player.getX(),
       y: this.player.getY(),
     };
@@ -52,10 +53,8 @@ window.Level = (function() {
     for (var x = 0; x < width; x++) {
       this.terrain.push([]);
       for (var y = 0; y < height; y++){
-        // empty tiles are null
         var t = null;
-        // edge tiles are solid
-        if (x === 0 || x === width - 1 || y === 0 || y === height - 1) {
+        if (mapData[y][x] === 1) {
           t = new TerrainTile(x, y, app.assets.solid.texture);
         }
         this.terrain[x][y] = t;
@@ -137,13 +136,7 @@ window.Level = (function() {
           }
         }
       }
-
     }
-
-    // collision detection of tangibles against terrain
-    // TODO: use AABB of each tangible to check which grid spaces the box is in, check collision
-    // against only those terrain locations
-
   };
 
   function tickThrough(entities, dt){
@@ -185,6 +178,8 @@ window.Level = (function() {
 
     stage.addChild(container);
   };
+
+
 
   return Level;
 }());
