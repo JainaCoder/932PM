@@ -25,14 +25,14 @@ window.Level = (function() {
     playerClone.update = function(dt){
       var keyMap = app.input.keyMap;
       if (keyMap[37]) { // left arrow
-        this.img.position.x -= this.speed * dt;
+        this.pos.x -= this.speed * dt;
       } else if (keyMap[39]) { // right arrow
-        this.img.position.x += this.speed * dt;
+        this.pos.x += this.speed * dt;
       }
       if (keyMap[38]) { // up arrow
-        this.img.position.y -= this.speed * dt;
+        this.pos.y -= this.speed * dt;
       } else if (keyMap[40]) { // down arrow
-        this.img.position.y += this.speed * dt;
+        this.pos.y += this.speed * dt;
       }
     };
 
@@ -46,8 +46,8 @@ window.Level = (function() {
 
     this.camera = {
       zoom: 100, // on-screen-pixels per tile
-      x: this.player.getX(),
-      y: this.player.getY(),
+      x: this.player.pos.x,
+      y: this.player.pos.y,
     };
 
     // terrain is an array of arrays
@@ -91,8 +91,8 @@ window.Level = (function() {
     var zoom = camera.zoom;
     // Move camera 90% towards player every second on each axis
     // TODO: deadzone?
-    camera.x += (player.getX() - camera.x)  * 0.90 * dt;
-    camera.y += (player.getY() - camera.y) * 0.90 * dt;
+    camera.x += (player.pos.x - camera.x)  * 0.90 * dt;
+    camera.y += (player.pos.y - camera.y) * 0.90 * dt;
 
     tickThrough(this.tangibles, dt);
     tickThrough(this.intangibles, dt);
@@ -104,19 +104,19 @@ window.Level = (function() {
       for (var j = i + 1; j < l; j++){
         var t2 = this.tangibles[j];
 
-        var collision = t1.testCollision(t2.getX(), t2.getY(), t2.width, t2.height);
+        var collision = t1.testCollision(t2.pos.x, t2.pos.y, t2.width, t2.height);
         if (collision){
           t1.onCollide(t2);
           t2.onCollide(t1);
           var w1 = t1.weight;
           var w2 = t2.weight;
-          t1.moveBy(collision.scaled(w2/(w1 + w2)));
-          t2.moveBy(collision.scaled(-w1/(w1 + w2)));
+          t1.pos.add(collision.scaled(w2/(w1 + w2)));
+          t2.pos.add(collision.scaled(-w1/(w1 + w2)));
         }
       }
 
-      var x1 = t1.getX();
-      var y1 = t1.getY();
+      var x1 = t1.pos.x;
+      var y1 = t1.pos.y;
 
       // against terrain
       var minGridX = Math.max(0, Math.floor(x1 - t1.width/2 + 0.5));
@@ -134,7 +134,7 @@ window.Level = (function() {
             if (col){
               t1.onCollideTerrain(ter);
               ter.onCollide(t1);
-              t1.moveBy(col);
+              t1.pos.add(col);
             }
           }
         }

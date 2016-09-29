@@ -32,15 +32,15 @@ window.Player = (function() {
     // TODO: magic numbers are probably not the way to go :/
     // Also this is shitty placeholder code to demonstrate input
     if (keyMap[65]) { // A
-      this.img.position.x -= this.speed * dt;
+      this.pos.x -= this.speed * dt;
     } else if (keyMap[68]) { // D
-      this.img.position.x += this.speed * dt;
+      this.pos.x += this.speed * dt;
     }
     // NOTE: movement axes should not be independent! This is just set up as a shitty placeholder!
     if (keyMap[87]) { // W
-      this.img.position.y -= this.speed * dt;
+      this.pos.y -= this.speed * dt;
     } else if (keyMap[83]) { // S
-      this.img.position.y += this.speed * dt;
+      this.pos.y += this.speed * dt;
     }
   };
 

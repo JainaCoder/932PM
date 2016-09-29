@@ -5,8 +5,7 @@
 window.Entity = (function() {
   function Entity(xLoc, yLoc){
     this.img = new PIXI.Container();
-    this.img.position.x = xLoc;
-    this.img.position.y = yLoc;
+    this.pos = new Vector(xLoc, yLoc);
   }
 
   // we can probably think of these as abstract functions.
@@ -17,6 +16,8 @@ window.Entity = (function() {
   // them
   Entity.prototype.update = function(dt) { };
   Entity.prototype.render = function(stage) {
+    this.img.position.x = this.pos.x;
+    this.img.position.y = this.pos.y;
     stage.addChild(this.img);
   };
 
@@ -24,27 +25,6 @@ window.Entity = (function() {
   // be removed from the level
   Entity.prototype.alive = function(renderer) {
     return true;
-  };
-
-  Entity.prototype.getX = function() {
-    return this.img.position.x;
-  };
-  Entity.prototype.getY = function() {
-    return this.img.position.y;
-  };
-
-  Entity.prototype.getPos = function() {
-    return new Vector(this.img.position.x, this.img.position.y);
-  };
-
-  Entity.prototype.setPos = function(pos) {
-    this.img.position.x = pos.x;
-    this.img.position.y = pos.y;
-  };
-
-  Entity.prototype.moveBy = function(displacement) {
-    this.img.position.x += displacement.x;
-    this.img.position.y += displacement.y;
   };
 
   return Entity;

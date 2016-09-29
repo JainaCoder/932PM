@@ -45,8 +45,8 @@ window.Tangible = (function() {
 
   // copied this code over from the game I made first year in C#
   Tangible.prototype.testCollision = function(otherX, otherY, otherWidth, otherHeight){
-    var x = this.getX();
-    var y = this.getY();
+    var x = this.pos.x;
+    var y = this.pos.y;
     var width = this.width;
     var height = this.height;
 
@@ -64,8 +64,7 @@ window.Tangible = (function() {
     var depthX2 = x + width/2 - (otherX - otherWidth /2); // From the left
 
     var right = true;
-    if (Math.abs(depthX2) < Math.abs(depthX))
-    {
+    if (Math.abs(depthX2) < Math.abs(depthX)){
       right = false;
       depthX = depthX2;
     }
@@ -74,20 +73,16 @@ window.Tangible = (function() {
     var depthY2 = y + height / 2 - (otherY - otherHeight / 2); // Top
 
     var top = true;
-    if (Math.abs(depthY2) < Math.abs(depthY))
-    {
+    if (Math.abs(depthY2) < Math.abs(depthY)){
       top = false;
       depthY = depthY2;
     }
 
-    if (Math.abs(depthY) > Math.abs(depthX) || depthY == 0 )
-    {
+    if (Math.abs(depthY) > Math.abs(depthX) || depthY == 0 ){
         // Intersecting from the left or right
       return new Vector(right? depthX : -depthX, 0);
-    }
-    else if (Math.abs(depthX) > Math.abs(depthY) || depthX == 0)
-    {
-        // Intersectiong from top or bottom
+    } else if (Math.abs(depthX) > Math.abs(depthY) || depthX == 0) {
+      // Intersectiong from top or bottom
       //  return new Vector2(bTop ? -fDepthY : fDepthY, 0.0f);
       return new Vector(0, top ? depthY : -depthY);
     }
