@@ -101,7 +101,7 @@ window.Player = (function() {
 
   Player.prototype.onCollideTerrain = function(terrain, x, y, verticalHit, horizontalHit) {
     if (verticalHit) {
-      (y > this.pos.y) {
+      if (y > this.pos.y) {
         this.jumpTimer = 0;
         this.vel.y = 0;
       }
