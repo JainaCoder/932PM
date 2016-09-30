@@ -17,7 +17,7 @@ window.Player = (function() {
 
     this.img.addChild(body);
 
-    this.horizMoveForce = 2;
+    this.horizMoveForce = 20;
 
     this.vel = new Vector();
     this.acc = new Vector();
@@ -43,16 +43,16 @@ window.Player = (function() {
     var vel = this.vel;
 
     if (rightHeld) {
-      acc.x += this.horizMoveForce * dt;
+      acc.x += this.horizMoveForce;
       // Else means right will always override. If we want whichever was hit last to win, we'd
       // have to update the inputManager somehow to account for key hit order or something
     } else if (leftHeld) {
-      acc.x -= this.horizMoveForce * dt;
+      acc.x -= this.horizMoveForce;
     }
 
     // slowdown percent per second
     // TODO: maybe split this into x and y directions, based on if you're against a wall or something
-    var drag = this.jumpTimer === 0 ? 20 : 8;
+    var drag = 2;
 
     if (upHeld) {
       if (this.jumpTimer < this.jumpTimerMax) {
@@ -60,7 +60,7 @@ window.Player = (function() {
         // actually goes up
         var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
         jumpMult *= jumpMult * jumpMult;
-        acc.y -= 10 * dt * jumpMult;
+        acc.y -= 120 * jumpMult;
       }
       this.jumpTimer += dt;
     } else {
@@ -73,16 +73,18 @@ window.Player = (function() {
     vel.multiply(1 - drag * dt);
 
     // gravity
-    acc.y += 1.0 * dt;
+    acc.y += 25.0;
 
-    vel.add(acc);
+    vel.add(acc.scaled(dt));
+
 
     // clamp to max velocity
-    if (vel.magSqrd() > this.maxVel * this.maxVel * dt * dt) {
-      vel.normalize().multiply(this.maxVel * dt);
+    if (vel.magSqrd() > this.maxVel * this.maxVel) {
+      vel.normalize().multiply(this.maxVel);
     }
 
-    this.pos.add(vel);
+
+    this.pos.add(vel.scaled(dt));
 
     this.acc = new Vector();
 
@@ -100,11 +102,17 @@ window.Player = (function() {
   };
 
   Player.prototype.onCollideTerrain = function(terrain, x, y, verticalHit) {
-    if (verticalHit && y > this.pos.y) {
-      this.jumpTimer = 0;
+    if (verticalHit) {
+      if (y > this.pos.y) {
+        this.jumpTimer = 0;
+        this.vel.y = 0;
+      }
+
     } else {
       // use this for wall jumping
       this.onWall = true;
+
+      this.vel.x = 0;
     }
   };
 
