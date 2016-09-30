@@ -7,6 +7,8 @@ app.debug = false;
 app.core = {
   // https://pixijs.github.io/docs/PIXI.WebGLRenderer.html
   renderer: null,
+  
+  GRAV: 2.0,
 
   // https://pixijs.github.io/docs/PIXI.Container.html
   // see `render` below for more

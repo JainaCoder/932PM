@@ -131,15 +131,21 @@ window.Level = (function() {
             var colVert = t1.testCollisionVert(x, y, 1, 1, t1.maxVel * dt);
             var colHoriz = t1.testCollisionHoriz(x, y, 1, 1, t1.maxVel * dt);
             if (colVert){
-              t1.onCollideTerrain(ter, x, y, true);
+              t1.onCollideTerrain(ter, x, y, true, false);
               ter.onCollide(t1, true);
               t1.pos.y += colVert;
             }
             if (colHoriz){
-              t1.onCollideTerrain(ter, x, y, false);
+              t1.onCollideTerrain(ter, x, y, false, true);
               ter.onCollide(t1, false);
               t1.pos.x += colHoriz;
-            }
+            } 
+            
+            //dectect both at once?
+            /*t1.onCollideTerrain(ter, x, y, colVert, colHoriz);
+            ter.onCollide(t1, true);
+            t1.pos.y += colVert;
+            t1.pos.x += colHoriz;*/
           }
         }
       }
