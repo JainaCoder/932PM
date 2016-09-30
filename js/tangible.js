@@ -152,7 +152,7 @@ window.Tangible = (function() {
     // called when this tangible collides with another tangible
   };
 
-  Tangible.prototype.onCollideTerrain = function(terrain, verticalHit) {
+  Tangible.prototype.onCollideTerrain = function(terrain, x, y, verticalHit) {
     // called when this tangible collides with terrain
   };
 

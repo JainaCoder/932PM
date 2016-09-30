@@ -17,10 +17,13 @@ window.Player = (function() {
 
     this.img.addChild(body);
 
-    this.horizMoveForce = 6;
+    this.horizMoveForce = 2;
 
     this.vel = new Vector();
     this.acc = new Vector();
+
+    // This determines how long after jumping we'll care if the user is still pressing the up button
+    this.jumpTimerMax = 0.5;
 
     this.keyMap = {};
 
@@ -36,29 +39,43 @@ window.Player = (function() {
     var rightHeld = app.input.isKeyDown('D');
     var upHeld = app.input.isKeyDown('W');
     var downHeld = app.input.isKeyDown('S');
+    var acc = this.acc;
     var vel = this.vel;
 
     if (rightHeld) {
-      vel.x += this.horizMoveForce * dt;
+      acc.x += this.horizMoveForce * dt;
       // Else means right will always override. If we want whichever was hit last to win, we'd
       // have to update the inputManager somehow to account for key hit order or something
     } else if (leftHeld) {
-      vel.x -= this.horizMoveForce * dt;
+      acc.x -= this.horizMoveForce * dt;
     }
 
+    // slowdown percent per second
+    // TODO: maybe split this into x and y directions, based on if you're against a wall or something
+    var drag = this.jumpTimer === 0 ? 20 : 8;
+
     if (upHeld) {
-      vel.y -= 20 * dt;
+      if (this.jumpTimer < this.jumpTimerMax) {
+        // this determines the relationship between the jump timer and how much the character
+        // actually goes up
+        var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
+        jumpMult *= jumpMult * jumpMult;
+        acc.y -= 10 * dt * jumpMult;
+      }
+      this.jumpTimer += dt;
+    } else {
+      this.jumpTimer = this.jumpTimerMax;
     }
 
     // TODO: move some of this logic to `Tangible`
 
-    // slowdown percent per second
-    var drag = 1.5;
 
     vel.multiply(1 - drag * dt);
 
     // gravity
-    vel.y += 5.0 * dt;
+    acc.y += 1.0 * dt;
+
+    vel.add(acc);
 
     // clamp to max velocity
     if (vel.magSqrd() > this.maxVel * this.maxVel * dt * dt) {
@@ -67,7 +84,12 @@ window.Player = (function() {
 
     this.pos.add(vel);
 
-    this.vel = new Vector();
+    this.acc = new Vector();
+
+    // these are determined each frame, these are the defaults, they are potentially
+    // changed to true during collision detection
+    this.grounded = false;
+    this.onWall = false;
 
   };
 
@@ -75,6 +97,15 @@ window.Player = (function() {
   // which may not be how we want to determine player death, so that should be handled elsewhere
   Player.prototype.alive = function(renderer) {
     return true;
+  };
+
+  Player.prototype.onCollideTerrain = function(terrain, x, y, verticalHit) {
+    if (verticalHit && y > this.pos.y) {
+      this.jumpTimer = 0;
+    } else {
+      // use this for wall jumping
+      this.onWall = true;
+    }
   };
 
   return Player;
