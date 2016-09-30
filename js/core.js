@@ -16,6 +16,8 @@ app.core = {
 
 
   lastTime: 0, // Used to calculate delta time
+  dt: 0,
+  timeStep: 1/60,
 
   // TODO use bind() or something to clean up all these `app.core`s
   init: function() {
@@ -76,11 +78,18 @@ app.core = {
     // we should bother with it for this game.
     // http://gafferongames.com/game-physics/fix-your-timestep/
     var now = Date.now();
-    var dt = now - app.core.lastTime;
+    var delta = now - app.core.lastTime;
     app.core.lastTime = now;
 
     // Date.now() is in miliseconds, so convert to seconds
-    app.core.update(dt/1000);
+    delta /= 1000;
+
+    app.core.dt += delta;
+
+    while (app.core.dt > app.core.timeStep){
+      app.core.update(app.core.timeStep);
+      app.core.dt -= app.core.timeStep;
+    }
 
     app.core.render();
 

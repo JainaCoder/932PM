@@ -17,7 +17,7 @@ window.Level = (function() {
 
     this.intangibles = [];
     this.tangibles = [];
-    this.player = new Player(width/2, height/2, this);
+    this.player = new Player(4, height/2, this);
     this.tangibles.push(this.player);
 
     // TODO: delete this, its just for testing
@@ -64,7 +64,7 @@ window.Level = (function() {
       }
     }
 
-    populateLevel.bind(this)();
+  //  populateLevel.bind(this)();
   }
 
 
@@ -127,14 +127,20 @@ window.Level = (function() {
       for (var x = minGridX; x <= maxGridX; x++){
         for (var y = minGridY; y <= maxGridY; y++){
           var ter = this.terrain[x][y];
-          if ( ter && ter.solid){
-            // TODO: if some terrain is only partial squares, or has other properties,
-            // we'll want to address that here
-            var col = t1.testCollision(x, y, 1, 1);
-            if (col){
-              t1.onCollideTerrain(ter);
-              ter.onCollide(t1);
-              t1.pos.add(col);
+          if (ter && ter.solid){
+            // TODO: WIP
+            var colVert = t1.testCollisionVert(x, y, 1, 1, t1.maxVel * dt);
+            var colHoriz = t1.testCollisionHoriz(x, y, 1, 1, t1.maxVel * dt);
+            if (colHoriz || colVert)
+            if (colVert){
+              t1.onCollideTerrain(ter, true);
+              ter.onCollide(t1, true);
+              t1.pos.y += colVert;
+            }
+            if (colHoriz){
+              t1.onCollideTerrain(ter, false);
+              ter.onCollide(t1, false);
+              t1.pos.x += colHoriz;
             }
           }
         }

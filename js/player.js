@@ -17,7 +17,10 @@ window.Player = (function() {
 
     this.img.addChild(body);
 
-    this.speed = 2;
+    this.horizMoveForce = 6;
+
+    this.vel = new Vector();
+    this.acc = new Vector();
 
     this.keyMap = {};
 
@@ -26,22 +29,46 @@ window.Player = (function() {
   // Player is a subclass of Tangible
   Player.prototype = Object.create(Tangible.prototype);
 
+
   Player.prototype.update = function(dt) {
     Tangible.prototype.update.call(this, dt);
-    var keyMap = app.input.keyMap;
-    // TODO: magic numbers are probably not the way to go :/
-    // Also this is shitty placeholder code to demonstrate input
-    if (keyMap[65]) { // A
-      this.pos.x -= this.speed * dt;
-    } else if (keyMap[68]) { // D
-      this.pos.x += this.speed * dt;
+    var leftHeld = app.input.isKeyDown('A');
+    var rightHeld = app.input.isKeyDown('D');
+    var upHeld = app.input.isKeyDown('W');
+    var downHeld = app.input.isKeyDown('S');
+    var vel = this.vel;
+
+    if (rightHeld) {
+      vel.x += this.horizMoveForce * dt;
+      // Else means right will always override. If we want whichever was hit last to win, we'd
+      // have to update the inputManager somehow to account for key hit order or something
+    } else if (leftHeld) {
+      vel.x -= this.horizMoveForce * dt;
     }
-    // NOTE: movement axes should not be independent! This is just set up as a shitty placeholder!
-    if (keyMap[87]) { // W
-      this.pos.y -= this.speed * dt;
-    } else if (keyMap[83]) { // S
-      this.pos.y += this.speed * dt;
+
+    if (upHeld) {
+      vel.y -= 20 * dt;
     }
+
+    // TODO: move some of this logic to `Tangible`
+
+    // slowdown percent per second
+    var drag = 1.5;
+
+    vel.multiply(1 - drag * dt);
+
+    // gravity
+    vel.y += 5.0 * dt;
+
+    // clamp to max velocity
+    if (vel.magSqrd() > this.maxVel * this.maxVel * dt * dt) {
+      vel.normalize().multiply(this.maxVel * dt);
+    }
+
+    this.pos.add(vel);
+
+    this.vel = new Vector();
+
   };
 
   // NOTE: this is used by `level` to determine if an entity should be removed from the level,

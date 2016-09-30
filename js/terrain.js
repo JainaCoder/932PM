@@ -21,7 +21,7 @@ window.TerrainTile = (function() {
 
   TerrainTile.prototype.render = function(stage) { stage.addChild(this.sprite); };
 
-  TerrainTile.prototype.onCollide = function(tangible) {
+  TerrainTile.prototype.onCollide = function(tangible, verticalHit) {
     // called when a `Tangible` collides with this tile
   };
 

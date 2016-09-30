@@ -6,6 +6,17 @@ app.input = {
 
   keyMap: {},
 
+  keyCodes: {
+    'A': 65,
+    'S': 83,
+    'W': 87,
+    'D': 68,
+  },
+
+  isKeyDown: function(char){
+    return this.keyMap[this.keyCodes[char]];
+  },
+
   // this makes mouse clicks a little harder to detect, as you have to track if the button
   // is down or not and then if its been released, every `update()`. This could be the desired
   // approach for the `player`, but for menus it could be annoying. We can reassess then.
