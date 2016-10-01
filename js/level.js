@@ -20,17 +20,8 @@ window.Level = (function() {
     this.player = new Player(4, height/2, this);
     this.tangibles.push(this.player);
 
-    // container for use in `render()`
-    this.container = new PIXI.Container();
-
     // using this to track total time the level has been running
     this.time = 0;
-
-    this.camera = {
-      zoom: 100, // on-screen-pixels per tile
-      x: this.player.pos.x,
-      y: this.player.pos.y,
-    };
 
     // terrain is an array of arrays
     this.terrain = [];
@@ -126,16 +117,6 @@ window.Level = (function() {
 
     this.time += dt;
 
-    // Update camera
-    var camera = this.camera;
-    var player = this.player;
-    // zooming in and out just to show that it works
-    camera.zoom = 70 + Math.sin(this.time/3) * 15;
-    var zoom = camera.zoom;
-    // Move camera 90% towards player every second on each axis
-    // TODO: deadzone?
-    camera.x += (player.pos.x - camera.x)  * 0.90 * dt;
-    camera.y += (player.pos.y - camera.y) * 0.90 * dt;
 
     tickThrough(this.tangibles, dt);
     tickThrough(this.intangibles, dt);
@@ -209,32 +190,27 @@ window.Level = (function() {
   // we're putting all PIXI.DisplayObject's into a PIXI.Container so that we can apply
   // a matrix to all of them, seperate from any potential UI
   Level.prototype.render = function(stage) {
-    var container = this.container;
-    container.removeChildren();
 
     for (var i = 0, l = this.tangibles.length; i < l; i++) {
-      this.tangibles[i].render(container);
+      this.tangibles[i].render(stage);
     }
 
     for (i = 0, l = this.intangibles.length; i < l; i++) {
-      this.intangibles[i].render(container);
+      this.intangibles[i].render(stage);
     }
 
     // TODO: cull offscreen?
     for (var x = 0; x < this.width; x++) {
       for (var y = 0; y < this.height; y++) {
         if (this.terrain[x][y]){
-          this.terrain[x][y].render(container);
+          this.terrain[x][y].render(stage);
         }
       }
     }
 
-    // TODO: camera tracking should probably happen in GameScreen, not Level
-    var zoom = this.camera.zoom;
-    container.setTransform(-this.camera.x * zoom + window.innerWidth/2, -this.camera.y * zoom + window.innerHeight/2, zoom, zoom);
-
-    stage.addChild(container);
+    stage.addChild(stage);
   };
+
 
   Level.prototype.save = function(){
     console.log("Saving level");

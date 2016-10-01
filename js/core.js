@@ -20,7 +20,6 @@ app.core = {
   dt: 0,
   timeStep: 1/60,
 
-  // TODO use bind() or something to clean up all these `app.core`s
   init: function() {
     app.input.registerListener();
 
@@ -54,8 +53,6 @@ app.core = {
   },
 
   onLoad: function(){
-    console.log("core.onLoad");
-    console.dir(app.assets.debug.texture)
     var debugLabel = new PIXI.Sprite(app.assets.debug.texture);
     app.core.debugLabel = debugLabel;
     debugLabel.scale = new PIXI.Point(20, 20);
