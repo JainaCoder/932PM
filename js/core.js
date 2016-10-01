@@ -2,12 +2,10 @@
 
 var app = app || {};
 
-app.debug = false;
-
 app.core = {
   // https://pixijs.github.io/docs/PIXI.WebGLRenderer.html
   renderer: null,
-  
+
   //gravity
   GRAV: 50.0,
 
@@ -30,14 +28,10 @@ app.core = {
     var renderer = new PIXI.WebGLRenderer(256, 256);
     app.core.renderer = renderer;
 
-    // Debug milisecond per frame stuff
-    app.core.mspfText = new PIXI.Text(
-      '[no mspf data yet]',
-      { fontFamily : 'Arial', fontSize: 24, fill : 0xff1010, align : 'center' }
+    app.input.registerKeyUpListener(
+      app.input.keyCodes['~'],
+      function() { app.debug = !app.debug; console.log("toggle debug"); }
     );
-    app.core.mspfText.x = 50;
-    app.core.mspfText.y = window.innerHeight - 50;
-    app.core.mspfTick = 0;
 
     app.core.stage = new PIXI.Container();
 
@@ -54,10 +48,19 @@ app.core = {
     renderer.backgroundColor = app.palette.primary[0];
 
     app.core.screen = new LoadingScreen();
-    // app.core.screen = new GameScreen(10, 7)
 
     app.core.lastTime = Date.now();
     app.core.gameLoop();
+  },
+
+  onLoad: function(){
+    console.log("core.onLoad");
+    console.dir(app.assets.debug.texture)
+    var debugLabel = new PIXI.Sprite(app.assets.debug.texture);
+    app.core.debugLabel = debugLabel;
+    debugLabel.scale = new PIXI.Point(20, 20);
+    debugLabel.y = window.innerHeight - 150;
+    debugLabel.x = 50;
   },
 
   // in case we ever want to add onMount and onUnmount callbacks to screens, we should
@@ -110,9 +113,8 @@ app.core = {
     app.core.stage.removeChildren();
     app.core.screen.render(app.core.stage);
 
-    // render miliseconds per frame
     if (app.debug) {
-      app.core.stage.addChild(app.core.mspfText);
+      app.core.stage.addChild(app.core.debugLabel);
     }
 
     // this is when everything is actually rendered to the screen
@@ -121,14 +123,5 @@ app.core = {
 
   update: function(dt) {
     app.core.screen.update(dt);
-
-    if (app.debug) {
-      app.core.mspfTick += dt;
-      if (app.core.mspfTick > 1.0) {
-        app.core.mspfTick = 0;
-        app.core.mspfText.text = dt + " mspf";
-      }
-    }
-
   }
 };

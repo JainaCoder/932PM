@@ -16,6 +16,7 @@ app.input = {
     'P': 80,
     'K': 75,
     'L': 76,
+    '~': 192,
   },
 
   keyUpListeners: [],

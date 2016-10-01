@@ -9,19 +9,19 @@ window.GameScreen = (function() {
 
     app.input.registerKeyUpListener(
       app.input.keyCodes['P'],
-      function() { this.level.widthChangeFlag = 1; }.bind(this)
+      function() { if(app.debug) this.level.widthChangeFlag = 1; }.bind(this)
     );
     app.input.registerKeyUpListener(
       app.input.keyCodes['L'],
-      function() { this.level.heightChangeFlag = 1; }.bind(this)
+      function() { if(app.debug) this.level.heightChangeFlag = 1; }.bind(this)
     );
     app.input.registerKeyUpListener(
       app.input.keyCodes['O'],
-      function() { this.level.widthChangeFlag = -1; }.bind(this)
+      function() { if(app.debug) this.level.widthChangeFlag = -1; }.bind(this)
     );
     app.input.registerKeyUpListener(
       app.input.keyCodes['K'],
-      function() { this.level.heightChangeFlag = -1; }.bind(this)
+      function() { if(app.debug) this.level.heightChangeFlag = -1; }.bind(this)
     );
 
   }

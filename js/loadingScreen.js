@@ -29,7 +29,7 @@ window.LoadingScreen = (function() {
     loader.on('complete', function(loader, resources){
       console.log("loading complete");
       app.assets = resources;
-
+      app.core.onLoad();
       console.log("loading map");
       loadJSON("maps/neato.json", function(response) {
         app.core.switchScreen(new GameScreen(JSON.parse(response)));
@@ -48,7 +48,8 @@ window.LoadingScreen = (function() {
   // `loader.add()` in `queueAssets()`. This is just here for convenience.
   var textures = [
     'ground',
-    'solid'
+    'solid',
+    'debug',
   ];
 
   function queueAssets(loader){
