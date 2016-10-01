@@ -32,11 +32,23 @@ window.Vector = (function() {
     return this;
   };
 
+  Vector.prototype.addScalars = function(x, y) {
+    this.x += x;
+    this.y += y;
+    return this;
+  };
+
   //Subtract a vector from this one
   Vector.prototype.subtract = function(otherVec) {
     this.x -= otherVec.x;
     this.y -= otherVec.y;
     return this;
+  };
+
+  // returns the difference between this vector and another, or
+  // the vector needed to get from this vector to another
+  Vector.prototype.diff = function(otherVec) {
+    return new Vector(otherVec.x - this.x, otherVec.y - this.y);
   };
 
   //Multiply this vector by a scalar
@@ -81,6 +93,12 @@ window.Vector = (function() {
   //return a PIXI.Point with this vector's x and y
   Vector.prototype.toPixiPoint = function() {
     return new PIXI.Point(this.x, this.y);
+  };
+
+  Vector.prototype.floor = function() {
+    this.x = Math.floor(this.x);
+    this.y = Math.floor(this.y);
+    return this;
   };
 
   return Vector;

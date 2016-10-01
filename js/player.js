@@ -105,19 +105,19 @@ window.Player = (function() {
         this.jumpTimer = 0;
         this.vel.y = 0;
       }
-      
+
       if ( y < this.pos.y) {
         this.vel.y = 0;
       }
-      
-    } 
-    
+
+    }
+
     if (horizontalHit && !this.grounded) {
         this.onWall = true;
-      
+
         this.vel.x = 0;
       }
-    
+
   };
 
   return Player;

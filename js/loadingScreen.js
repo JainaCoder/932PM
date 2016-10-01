@@ -1,7 +1,7 @@
 "use strict";
 
 window.LoadingScreen = (function() {
-  function LoadingScreen(){
+  function LoadingScreen() {
     Screen.call(this); // not actually needed until there are args :/
 
     // documentation for the loader is pretty poor :(
@@ -15,23 +15,23 @@ window.LoadingScreen = (function() {
     //loader.on('progress', function(loader, resource){ })
 
     // called once per errored file
-    loader.on('error', function(error, loader, resource){
+    loader.on('error', function(error, loader, resource) {
       console.log("ERROR loading " + resource.name + " from " + resource.url);
     });
 
     // called once per loaded file
-    loader.on('load', function(loader, resource){
+    loader.on('load', function(loader, resource) {
       console.log("Loaded " + resource.name + " from " + resource.url);
     });
 
     // called once when all resources have loaded
     // this function could alternatively be passed to loader.load()
-    loader.on('complete', function(loader, resources){
+    loader.on('complete', function(loader, resources) {
       console.log("loading complete");
       app.assets = resources;
       app.core.onLoad();
       console.log("loading map");
-      loadJSON("maps/neato.json", function(response) {
+      loadJSON("maps/swag.json", function(response) {
         app.core.switchScreen(new GameScreen(JSON.parse(response)));
       });
 
@@ -52,7 +52,7 @@ window.LoadingScreen = (function() {
     'debug',
   ];
 
-  function queueAssets(loader){
+  function queueAssets(loader) {
 
     // first arguement is the name the asset will have in the final `resources`
     // object, and does not have to match the filename

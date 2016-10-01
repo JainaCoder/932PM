@@ -17,11 +17,13 @@ app.input = {
     'K': 75,
     'L': 76,
     '~': 192,
+    'Q': 81,
+    'E': 69, // ( ͡° ͜ʖ ͡°)
   },
 
   keyUpListeners: [],
 
-  isKeyDown: function(char){
+  isKeyDown: function(char) {
     return this.keyMap[this.keyCodes[char]];
   },
 
@@ -38,6 +40,8 @@ app.input = {
   },
 
   mouseLoc: {},
+
+  mouseButtonUpListeners: [],
 
   registerListener: function() {
 
@@ -71,9 +75,9 @@ app.input = {
 
   onKeyUp: function(event) {
     this.keyMap[event.keyCode] = false;
-    for (var i = 0, l = this.keyUpListeners.length; i < l; i++){
-      if (this.keyUpListeners[i].keyCode === event.keyCode){
-        this.keyUpListeners[i].callback();
+    for (var i = 0, l = this.keyUpListeners.length; i < l; i++) {
+      if (this.keyUpListeners[i].keyCode === event.keyCode) {
+        this.keyUpListeners[i].callback(event);
       }
     }
   },
@@ -84,6 +88,11 @@ app.input = {
 
   onMouseUp: function(event) {
     this.mouseMap[event.button] = false;
+    for (var i = 0, l = this.mouseButtonUpListeners.length; i < l; i++) {
+      if (this.mouseButtonUpListeners[i].mouseButton == event.button) {
+        this.mouseButtonUpListeners[i].callback(event);
+      }
+    }
   },
 
   onMouseDown: function(event) {
@@ -95,7 +104,11 @@ app.input = {
     this.mouseLoc.y = event.offsetY;
   },
 
-  registerKeyUpListener: function(keyCode, callback){
-    this.keyUpListeners.push({keyCode: keyCode, callback: callback });
+  registerKeyUpListener: function(keyCode, callback) {
+    this.keyUpListeners.push({ keyCode: keyCode, callback: callback });
+  },
+
+  registerMouseButtonUpListener: function(mouseButton, callback) {
+    this.mouseButtonUpListeners.push({ mouseButton: mouseButton, callback: callback });
   }
 };

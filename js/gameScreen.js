@@ -1,15 +1,14 @@
 "use strict";
 
 window.GameScreen = (function() {
-  function GameScreen(mapData){
+  function GameScreen(mapData) {
     Screen.call(this); // not actually needed until there are args :/
     this.level = new Level(mapData);
     this.levelContainer = new PIXI.Container();
 
     this.camera = {
       zoom: 100, // on-screen-pixels per tile
-      x: this.level.player.pos.x,
-      y: this.level.player.pos.y,
+      offset: this.level.player.pos.clone()
     };
 
     this.saveHeld = false;
@@ -30,6 +29,17 @@ window.GameScreen = (function() {
       app.input.keyCodes['K'],
       function() { if(app.debug) this.level.heightChangeFlag = -1; }.bind(this)
     );
+    app.input.registerMouseButtonUpListener(
+      app.input.mouseButtons.MAIN,
+      function(mouseEvent) {
+        var mouseLoc = new Vector(mouseEvent.offsetX, mouseEvent.offsetY);
+        var camera = this.camera;
+        mouseLoc.add(
+          camera.offset.scaled(camera.zoom).addScalars(-window.innerWidth/2, -window.innerHeight/2)
+        ).multiply(1/camera.zoom).addScalars(.5, .5);
+        this.level.primaryMouseClick = mouseLoc;
+      }.bind(this)
+    );
 
   }
 
@@ -43,15 +53,38 @@ window.GameScreen = (function() {
     // Update camera
     var camera = this.camera;
     var player = this.level.player;
-    // zooming in and out just to show that it works
-    camera.zoom = 70 + Math.sin(this.level.time/3) * 15;
-    var zoom = camera.zoom;
-    // Move camera 90% towards player every second on each axis
-    // TODO: deadzone?
-    camera.x += (player.pos.x - camera.x)  * 0.90 * dt;
-    camera.y += (player.pos.y - camera.y) * 0.90 * dt;
 
-    //console.dir(camera)
+    if (app.debug) {
+      var leftHeld = app.input.isKeyDown('A');
+      var rightHeld = app.input.isKeyDown('D');
+      var upHeld = app.input.isKeyDown('W');
+      var downHeld = app.input.isKeyDown('S');
+      var zoomInHeld = app.input.isKeyDown('E');
+      var zoomOutHeld = app.input.isKeyDown('Q');
+      var scrollSpeed = 10.0;
+      if (leftHeld) {
+        camera.offset.x -= scrollSpeed * dt;
+      } else if (rightHeld) {
+        camera.offset.x += scrollSpeed * dt;
+      }
+      if (upHeld) {
+        camera.offset.y -= scrollSpeed * dt;
+      } else if (downHeld) {
+        camera.offset.y += scrollSpeed * dt;
+      }
+      if (zoomInHeld) {
+        camera.zoom += 1.5 * dt * camera.zoom;
+      } else if (zoomOutHeld) {
+        camera.zoom -= 1.5 * dt * camera.zoom;
+      }
+    } else {
+      // zooming in and out just to show that it works
+      camera.zoom = 70 + Math.sin(this.level.time/3) * 15;
+
+      // Move camera 90% towards player every second on each axis
+      // TODO: deadzone?
+      camera.offset.add(camera.offset.diff(player.pos).multiply(0.9 * dt));
+    }
 
     // Save level
     if (app.input.keyMap[16] && app.input.keyMap[83]) { // shift-s
@@ -67,7 +100,7 @@ window.GameScreen = (function() {
   GameScreen.prototype.render = function(stage) {
     this.levelContainer.removeChildren();
     var zoom = this.camera.zoom;
-    this.levelContainer.setTransform(-this.camera.x * zoom + window.innerWidth/2, -this.camera.y * zoom + window.innerHeight/2, zoom, zoom);
+    this.levelContainer.setTransform(-this.camera.offset.x * zoom + window.innerWidth/2, -this.camera.offset.y * zoom + window.innerHeight/2, zoom, zoom);
 
     this.level.render(this.levelContainer);
     stage.addChild(this.levelContainer);
