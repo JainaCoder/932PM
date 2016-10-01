@@ -6,12 +6,19 @@ app.input = {
 
   keyMap: {},
 
+  // there's probably a function that actually does this, with cross-browser support
   keyCodes: {
     'A': 65,
     'S': 83,
     'W': 87,
     'D': 68,
+    'O': 79,
+    'P': 80,
+    'K': 75,
+    'L': 76,
   },
+
+  keyUpListeners: [],
 
   isKeyDown: function(char){
     return this.keyMap[this.keyCodes[char]];
@@ -63,6 +70,11 @@ app.input = {
 
   onKeyUp: function(event) {
     this.keyMap[event.keyCode] = false;
+    for (var i = 0, l = this.keyUpListeners.length; i < l; i++){
+      if (this.keyUpListeners[i].keyCode === event.keyCode){
+        this.keyUpListeners[i].callback();
+      }
+    }
   },
 
   onKeyDown: function(event) {
@@ -81,4 +93,8 @@ app.input = {
     this.mouseLoc.x = event.offsetX;
     this.mouseLoc.y = event.offsetY;
   },
+
+  registerKeyUpListener: function(keyCode, callback){
+    this.keyUpListeners.push({keyCode: keyCode, callback: callback });
+  }
 };

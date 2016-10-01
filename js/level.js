@@ -20,24 +20,6 @@ window.Level = (function() {
     this.player = new Player(4, height/2, this);
     this.tangibles.push(this.player);
 
-    // TODO: delete this, its just for testing
-    var playerClone = new Player(width/2 + 2, height/2 + 2, this);
-    playerClone.update = function(dt){
-      var keyMap = app.input.keyMap;
-      if (keyMap[37]) { // left arrow
-        this.pos.x -= this.speed * dt;
-      } else if (keyMap[39]) { // right arrow
-        this.pos.x += this.speed * dt;
-      }
-      if (keyMap[38]) { // up arrow
-        this.pos.y -= this.speed * dt;
-      } else if (keyMap[40]) { // down arrow
-        this.pos.y += this.speed * dt;
-      }
-    };
-
-    this.tangibles.push(playerClone);
-
     // container for use in `render()`
     this.container = new PIXI.Container();
 
@@ -65,6 +47,7 @@ window.Level = (function() {
     }
 
   //  populateLevel.bind(this)();
+
   }
 
 
@@ -80,7 +63,67 @@ window.Level = (function() {
     }
   }
 
+  Level.prototype.increaseWidth = function() {
+    var col = [];
+    this.width++;
+    this.terrain.push(col);
+    for (var y = 0; y < this.height; y++){
+      col[y] = new TerrainTile(this.width-1, y, {texture: 'solid'});
+      if (y !== 0 && y !== this.height - 1){
+        this.terrain[this.width-2][y] = null;
+      }
+    }
+    console.log("level width increased to " + this.width);
+  };
+
+  Level.prototype.increaseHeight = function() {
+    this.height++;
+    for (var x = 0; x < this.width; x++){
+      this.terrain[x].push(new TerrainTile(x, this.height-1, {texture: 'solid'}));
+      if (x !== 0 && x !== this.width - 1){
+        this.terrain[x][this.height-2] = null;
+      }
+    }
+    console.log("level height increased to " + this.height);
+  };
+
+  Level.prototype.decreaseWidth = function() {
+    this.width--;
+    this.terrain.pop();
+    for (var y = 0; y < this.height; y++){
+      this.terrain[this.width-1][y] = new TerrainTile(this.width-1, y, {texture: 'solid'});
+    }
+    console.log("level width decreased to " + this.width);
+  };
+
+  Level.prototype.decreaseHeight = function() {
+    this.height--;
+    for (var x = 0; x < this.width; x++){
+      this.terrain[x].pop();
+      this.terrain[x][this.height - 1] = new TerrainTile(x, this.height - 1, {texture: 'solid'});
+    }
+    console.log("level height increased to " + this.height);
+  };
+
   Level.prototype.update = function(dt) {
+
+    // Using flags to do these instead of having the keyboard events directly resize
+    // stuff so that it cant resize the level in the middle of a loop through it
+    if (this.widthChangeFlag === 1) {
+      this.widthChangeFlag = 0;
+      this.increaseWidth();
+    } else if (this.widthChangeFlag === -1){
+      this.widthChangeFlag = 0;
+      this.decreaseWidth();
+    }
+    if (this.heightChangeFlag === 1){
+      this.heightChangeFlag = 0;
+      this.increaseHeight();
+    } else if (this.heightChangeFlag === -1){
+      this.heightChangeFlag = 0;
+      this.decreaseHeight();
+    }
+
     this.time += dt;
 
     // Update camera
@@ -139,8 +182,8 @@ window.Level = (function() {
               t1.onCollideTerrain(ter, x, y, false, true);
               ter.onCollide(t1, false);
               t1.pos.x += colHoriz;
-            } 
-            
+            }
+
             //dectect both at once?
             /*t1.onCollideTerrain(ter, x, y, colVert, colHoriz);
             ter.onCollide(t1, true);

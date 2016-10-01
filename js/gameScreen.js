@@ -6,7 +6,26 @@ window.GameScreen = (function() {
     this.level = new Level(mapData);
 
     this.saveHeld = false;
+
+    app.input.registerKeyUpListener(
+      app.input.keyCodes['P'],
+      function() { this.level.widthChangeFlag = 1; }.bind(this)
+    );
+    app.input.registerKeyUpListener(
+      app.input.keyCodes['L'],
+      function() { this.level.heightChangeFlag = 1; }.bind(this)
+    );
+    app.input.registerKeyUpListener(
+      app.input.keyCodes['O'],
+      function() { this.level.widthChangeFlag = -1; }.bind(this)
+    );
+    app.input.registerKeyUpListener(
+      app.input.keyCodes['K'],
+      function() { this.level.heightChangeFlag = -1; }.bind(this)
+    );
+
   }
+
 
   // GameScreen is a subclass of Screen
   GameScreen.prototype = Object.create(Screen.prototype);
