@@ -17,7 +17,7 @@ window.Player = (function() {
 
     this.img.addChild(body);
 
-    this.horizMoveForce = 20;
+    this.horizMoveForce = 25;
 
     this.vel = new Vector();
     this.acc = new Vector();
@@ -52,7 +52,7 @@ window.Player = (function() {
 
     // slowdown percent per second
     // TODO: maybe split this into x and y directions, based on if you're against a wall or something
-    var drag = 2;
+    var drag = 3;
 
     if (upHeld) {
       if (this.jumpTimer < this.jumpTimerMax) {
@@ -61,7 +61,7 @@ window.Player = (function() {
         var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
         jumpMult *= jumpMult * jumpMult;
 
-        acc.y -= 120 * jumpMult;
+        acc.y -= 250 * jumpMult;
       }
       this.jumpTimer += dt;
     } else {
@@ -106,15 +106,16 @@ window.Player = (function() {
         this.vel.y = 0;
       }
       
-    } else {
-      // use this for wall jumping
-      this.onWall = true;
-
-      this.vel.x = 0;
-    }
+      if ( y < this.pos.y) {
+        this.vel.y = 0;
+      }
+      
+    } 
     
     if (horizontalHit && !this.grounded) {
-        this.vel = new Vector(0, this.vel.y);
+        this.onWall = true;
+      
+        this.vel.x = 0;
       }
     
   };
