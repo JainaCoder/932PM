@@ -41,9 +41,9 @@ window.Player = (function() {
     var rightHeld = app.input.isKeyDown('D');
     var upHeld = app.input.isKeyDown('W');
     var downHeld = app.input.isKeyDown('S');
-    this.grappling = app.input.mouseMap[0];
     var acc = this.acc;
     var vel = this.vel;
+    var grav = true;
 
     if (rightHeld) {
       acc.x += this.horizMoveForce;
@@ -71,25 +71,31 @@ window.Player = (function() {
       this.jumpTimer = this.jumpTimerMax;
     }
     
-    if (this.grappling) {
-      console.log("in");
+    if (app.input.mouseMap[0]) {
       var clone = this.level.primaryMouseClick.clone().floor();
       var x = clone.x;
-      var y = clone.y;
-      
-      if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+      var y = clone.y;      
+      if (x >= 0 && x < this.level.width && y >= 0 && y < this.level.height) {
+        console.log("in");
         if(this.level.terrain[x][y] !== null && this.level.terrain[x][y].solid) {
-            acc = this.pos.clone().subtract(this.level.primaryMouseClick).multiply(6);
+            this.grappling = true;
+            grav = false;
+            acc.add(this.level.primaryMouseClick.clone().subtract(this.pos).multiply(15));
           }
       }
       
     }
+    
+    if (!app.input.mouseMap[0])
+      {
+        this.grappling = false;
+      }
 
     // TODO: move some of this logic to `Tangible`
     vel.multiply(1 - drag * dt);
 
     // gravity
-    if(!this.grappling) {
+    if(grav) {
       acc.y += app.core.GRAV;
     }
 
