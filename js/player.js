@@ -139,8 +139,11 @@ window.Player = (function() {
 
     if (horizontalHit && !this.grounded) {
         this.onWall = true;
-
-        this.vel.x = 0;
+        this.jumpTimer = 0;
+        //this.acc.x *= -1;
+        
+        if(app.input.isKeyDown('W'))
+        this.vel.x *= -2;
       }
 
   };
