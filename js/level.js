@@ -223,7 +223,18 @@ window.Level = (function() {
       }
     }
     
-    stage.addChild(new PIXI.Graphics())
+    var graphics = new PIXI.Graphics();
+    
+    if(this.player.grappling){
+      graphics.beginFill(0x000000);
+      graphics.lineStyle(0.1, 0x000000);
+      
+      graphics.moveTo(this.player.pos.x, this.player.pos.y);
+      graphics.lineTo(this.primaryMouseClick.x, this.primaryMouseClick.y);
+      graphics.endFill();
+    }
+    
+    stage.addChild(graphics)
     
     stage.addChild(stage);
   };

@@ -22,6 +22,7 @@ window.Player = (function() {
     this.vel = new Vector();
     this.acc = new Vector();
     this.hookLen = 2;
+    this.grappling = false;
 
     // This determines how long after jumping we'll care if the user is still pressing the up button
     this.jumpTimerMax = 0.5;
@@ -40,7 +41,7 @@ window.Player = (function() {
     var rightHeld = app.input.isKeyDown('D');
     var upHeld = app.input.isKeyDown('W');
     var downHeld = app.input.isKeyDown('S');
-    var grappling = app.input.mouseMap[0];
+    this.grappling = app.input.mouseMap[0];
     var acc = this.acc;
     var vel = this.vel;
 
@@ -56,7 +57,7 @@ window.Player = (function() {
     // TODO: maybe split this into x and y directions, based on if you're against a wall or something
     var drag = 3;
 
-    if (upHeld && !grappling) {
+    if (upHeld && !this.grappling) {
       if (this.jumpTimer < this.jumpTimerMax) {
         // this determines the relationship between the jump timer and how much the character
         // actually goes up
@@ -70,15 +71,15 @@ window.Player = (function() {
       this.jumpTimer = this.jumpTimerMax;
     }
     
-    if (grappling) {
+    if (this.grappling) {
       console.log("in");
       var clone = this.level.primaryMouseClick.clone().floor();
       var x = clone.x;
       var y = clone.y;
       
       if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
-        if(this.level.terrain[x][y] !== null) {
-            vel = this.pos.clone().subtract(this.level.primaryMouseClick).multiply(6);
+        if(this.level.terrain[x][y] !== null && this.level.terrain[x][y].solid) {
+            acc = this.pos.clone().subtract(this.level.primaryMouseClick).multiply(6);
           }
       }
       
@@ -88,7 +89,7 @@ window.Player = (function() {
     vel.multiply(1 - drag * dt);
 
     // gravity
-    if(!grappling) {
+    if(!this.grappling) {
       acc.y += app.core.GRAV;
     }
 
