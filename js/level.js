@@ -1,3 +1,4 @@
+/*global TerrainTile Player*/
 "use strict";
 
 var app = app || {};
@@ -31,38 +32,55 @@ window.Level = (function() {
       for (var y = 0; y < height; y++) {
         var t = null;
         if (mapData.terrain[x][y] !== null) {
-          t = new TerrainTile(x, y, {texture: 'solid'});
+          t = new TerrainTile(x, y);
         }
         this.terrain[x][y] = t;
       }
     }
 
-  //  populateLevel.bind(this)();
-
-  }
-
-
-  function populateLevel() {
-    for (var i = 0; i < 20; i++) {
-      this.intangibles.push(
-        new DemoEntity(
-          this,
-          Math.random() * this.width,
-          Math.random() * this.height
-        )
-      );
+    for (x = 0; x < width; x++) {
+      for (y = 0; y < height; y++) {
+        this.checkAdjacentTiles(x, y);
+      }
     }
+
   }
+
+  Level.prototype.updateAdjacentTiles = function(x, y) {
+    this.checkAdjacentTiles(x-1, y-1);
+    this.checkAdjacentTiles(x-1, y);
+    this.checkAdjacentTiles(x-1, y+1);
+    this.checkAdjacentTiles(x, y-1);
+    this.checkAdjacentTiles(x, y);
+    this.checkAdjacentTiles(x, y+1);
+    this.checkAdjacentTiles(x+1, y-1);
+    this.checkAdjacentTiles(x+1, y);
+    this.checkAdjacentTiles(x+1, y+1);
+  };
+
+  Level.prototype.checkAdjacentTiles = function(x, y) {
+    if (x < 0 || x >= this.width || y < 0 || y >= this.height || !this.terrain[x][y]) return;
+    var n = y > 0 && this.terrain[x][y-1] && this.terrain[x][y-1].isStandardTile();
+    var s = y < this.height - 1 && this.terrain[x][y+1] && this.terrain[x][y+1].isStandardTile();
+    var w = x > 0 && this.terrain[x-1][y] && this.terrain[x-1][y].isStandardTile();
+    var e = x < this.width - 1 && this.terrain[x+1][y] && this.terrain[x+1][y].isStandardTile();
+    var tileImgId = (w ? 0 : 1) + (s ? 0 : 2) + (e ? 0 : 4) + (n ? 0 : 8);
+    this.terrain[x][y].setSprite('tile'+tileImgId);
+    console.log(x + ", " + y + " | " + tileImgId);
+  };
 
   Level.prototype.increaseWidth = function() {
     var col = [];
     this.width++;
     this.terrain.push(col);
     for (var y = 0; y < this.height; y++) {
-      col[y] = new TerrainTile(this.width-1, y, {texture: 'solid'});
+      col[y] = new TerrainTile(this.width-1, y);
       if (y !== 0 && y !== this.height - 1) {
         this.terrain[this.width-2][y] = null;
       }
+    }
+    for (y = 0; y < this.height; y++) {
+      this.updateAdjacentTiles(this.width-2, y);
     }
     console.log("level width increased to " + this.width);
   };
@@ -70,10 +88,13 @@ window.Level = (function() {
   Level.prototype.increaseHeight = function() {
     this.height++;
     for (var x = 0; x < this.width; x++) {
-      this.terrain[x].push(new TerrainTile(x, this.height-1, {texture: 'solid'}));
+      this.terrain[x].push(new TerrainTile(x, this.height-1));
       if (x !== 0 && x !== this.width - 1) {
         this.terrain[x][this.height-2] = null;
       }
+    }
+    for (x = 0; x < this.width; x++) {
+      this.updateAdjacentTiles(x, this.height-2);
     }
     console.log("level height increased to " + this.height);
   };
@@ -82,7 +103,10 @@ window.Level = (function() {
     this.width--;
     this.terrain.pop();
     for (var y = 0; y < this.height; y++) {
-      this.terrain[this.width-1][y] = new TerrainTile(this.width-1, y, {texture: 'solid'});
+      this.terrain[this.width-1][y] = new TerrainTile(this.width-1, y);
+    }
+    for (y = 0; y < this.height; y++) {
+      this.updateAdjacentTiles(this.width-1, y);
     }
     console.log("level width decreased to " + this.width);
   };
@@ -91,7 +115,10 @@ window.Level = (function() {
     this.height--;
     for (var x = 0; x < this.width; x++) {
       this.terrain[x].pop();
-      this.terrain[x][this.height - 1] = new TerrainTile(x, this.height - 1, {texture: 'solid'});
+      this.terrain[x][this.height - 1] = new TerrainTile(x, this.height - 1);
+    }
+    for (x = 0; x < this.width; x++) {
+      this.updateAdjacentTiles(x, this.height-1);
     }
     console.log("level height increased to " + this.height);
   };
@@ -122,10 +149,11 @@ window.Level = (function() {
       console.log(x + ", " + y);
       if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
         if (this.terrain[x][y] === null) {
-          this.terrain[x][y] = new TerrainTile(x, y, {texture: 'solid'}); // TODO: ugh, Im using this everywhere, bad practice
+          this.terrain[x][y] = new TerrainTile(x, y);
         } else {
           this.terrain[x][y] = null;
         }
+        this.updateAdjacentTiles(x,y);
       }
       this.primaryMouseClick = null;
     }
@@ -222,20 +250,20 @@ window.Level = (function() {
         }
       }
     }
-    
+
     var graphics = new PIXI.Graphics();
-    
+
     if(this.player.grappling){
       graphics.beginFill(0x000000);
       graphics.lineStyle(0.1, 0x000000);
-      
+
       graphics.moveTo(this.player.pos.x, this.player.pos.y);
       graphics.lineTo(this.primaryMouseClick.x, this.primaryMouseClick.y);
       graphics.endFill();
     }
-    
+
     stage.addChild(graphics)
-    
+
     stage.addChild(stage);
   };
 

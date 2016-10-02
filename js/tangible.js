@@ -3,7 +3,7 @@
 "use strict";
 
 window.Tangible = (function() {
-  function Tangible(xLoc, yLoc, width, height, weight, level){
+  function Tangible(xLoc, yLoc, width, height, weight, level) {
     Entity.call(this, xLoc, yLoc);
     this.width = width;
     this.height = height;
@@ -28,7 +28,7 @@ window.Tangible = (function() {
   Tangible.prototype = Object.create(Entity.prototype);
 
   // Returns true if the given point is within the bounds of this Tangible
-  Tangible.prototype.intersectsPoint = function(point){
+  Tangible.prototype.intersectsPoint = function(point) {
     var x = this.getX();
     var y = this.getY();
     return (point.x >= x - this.width / 2 &&
@@ -45,7 +45,7 @@ window.Tangible = (function() {
   };
 
   // copied this code over from the game I made first year in C#
-  Tangible.prototype.testCollision = function(otherX, otherY, otherWidth, otherHeight, vert, cornerCut){
+  Tangible.prototype.testCollision = function(otherX, otherY, otherWidth, otherHeight, vert, cornerCut) {
     var x = this.pos.x;
     var y = this.pos.y;
     var width = this.width;
@@ -113,7 +113,7 @@ window.Tangible = (function() {
       x + width/2 > otherX - otherWidth/2 &&
       y - height / 2 < otherY + otherHeight/2 &&
       y + height / 2 > otherY - otherHeight / 2
-    )){
+    )) {
       return false;
     }
 
@@ -124,7 +124,7 @@ window.Tangible = (function() {
 
   };
 
-  Tangible.prototype.testCollisionHoriz = function(otherX, otherY, otherWidth, otherHeight, cornerCut){
+  Tangible.prototype.testCollisionHoriz = function(otherX, otherY, otherWidth, otherHeight, cornerCut) {
     var x = this.pos.x;
     var y = this.pos.y;
     var width = this.width;

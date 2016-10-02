@@ -19,13 +19,7 @@
             "warn",
             "never"
         ],
-        "no-unused-vars": [
-            "off"
-        ],
         "comma-dangle": [
-            "off"
-        ],
-        "no-undef": [
             "off"
         ],
         "no-console": [
@@ -42,6 +36,14 @@
         "space-before-blocks": [
             "warn",
             "always"
+        ],
+        "eqeqeq": [
+            "error",
+            "always"
+        ],
+        "no-unused-vars": [
+            "warn",
+            { "vars": "local", "args": "after-used" }
         ]
     }
 }

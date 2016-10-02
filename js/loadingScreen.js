@@ -1,3 +1,4 @@
+/*global PIXI app loadJSON GameScreen*/
 "use strict";
 
 window.LoadingScreen = (function() {
@@ -66,6 +67,11 @@ window.LoadingScreen = (function() {
     // and are png
     for (var i = 0; i < textures.length; i++) {
       loader.add(textures[i], 'assets/' + textures[i] + '.png');
+    }
+
+    // load tiles
+    for (i = 0; i < 16; i++) {
+      loader.add('tile'+i, "assets/tiles/" + i + ".png");
     }
 
 
