@@ -21,6 +21,7 @@ window.Player = (function() {
 
     this.vel = new Vector();
     this.acc = new Vector();
+    this.hookLen = 2;
 
     // This determines how long after jumping we'll care if the user is still pressing the up button
     this.jumpTimerMax = 0.5;
@@ -39,6 +40,7 @@ window.Player = (function() {
     var rightHeld = app.input.isKeyDown('D');
     var upHeld = app.input.isKeyDown('W');
     var downHeld = app.input.isKeyDown('S');
+    var grappling = app.input.mouseMap[0];
     var acc = this.acc;
     var vel = this.vel;
 
@@ -54,7 +56,7 @@ window.Player = (function() {
     // TODO: maybe split this into x and y directions, based on if you're against a wall or something
     var drag = 3;
 
-    if (upHeld) {
+    if (upHeld && !grappling) {
       if (this.jumpTimer < this.jumpTimerMax) {
         // this determines the relationship between the jump timer and how much the character
         // actually goes up
@@ -66,6 +68,11 @@ window.Player = (function() {
       this.jumpTimer += dt;
     } else {
       this.jumpTimer = this.jumpTimerMax;
+    }
+    
+    if (grappling) {
+      this.level.primaryMouseClick.floor();
+      
     }
 
     // TODO: move some of this logic to `Tangible`

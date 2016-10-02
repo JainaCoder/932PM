@@ -40,6 +40,18 @@ window.GameScreen = (function() {
         this.level.primaryMouseClick = mouseLoc;
       }.bind(this)
     );
+    
+    app.input.registerMouseButtonDownListener(
+    app.input.mouseButtons.MAIN,
+      function(mouseEvent) {
+        var mouseLoc = new Vector(mouseEvent.offsetX, mouseEvent.offsetY);
+        var camera = this.camera;
+        mouseLoc.add(
+          camera.offset.scaled(camera.zoom).addScalars(-window.innerWidth/2, -window.innerHeight/2)
+        ).multiply(1/camera.zoom).addScalars(.5, .5);
+        this.level.primaryMouseClick = mouseLoc;
+      }.bind(this)
+    );
 
   }
 
