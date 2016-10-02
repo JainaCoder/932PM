@@ -72,7 +72,7 @@ window.Player = (function() {
       this.jumpTimer = this.jumpTimerMax;
     }
 
-    if (app.input.mouseMap[0]) {
+    if (app.input.mouseMap[0] && this.level.primaryMouseClick) {
       var clone = this.level.primaryMouseClick.clone().floor();
       var x = clone.x;
       var y = clone.y;

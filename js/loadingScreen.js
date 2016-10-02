@@ -33,6 +33,7 @@ window.LoadingScreen = (function() {
       app.core.onLoad();
       console.log("loading map");
       loadJSON("maps/swag.json", function(response) {
+        console.log("map data loaded");
         app.core.switchScreen(new GameScreen(JSON.parse(response)));
       });
 

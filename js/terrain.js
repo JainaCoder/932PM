@@ -22,7 +22,6 @@ window.TerrainTile = (function() {
   }
 
   TerrainTile.prototype.setSprite = function(textureName) {
-    console.log("set to" + textureName);
     var sprite = new PIXI.Sprite(app.assets[textureName].texture);
     this.sprite = sprite;
 

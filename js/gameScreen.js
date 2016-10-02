@@ -33,32 +33,33 @@ window.GameScreen = (function() {
     app.input.registerMouseButtonUpListener(
       app.input.mouseButtons.MAIN,
       function(mouseEvent) {
-        var mouseLoc = new Vector(mouseEvent.offsetX, mouseEvent.offsetY);
-        var camera = this.camera;
-        mouseLoc.add(
-          camera.offset.scaled(camera.zoom).addScalars(-window.innerWidth/2, -window.innerHeight/2)
-        ).multiply(1/camera.zoom).addScalars(.5, .5);
-        this.level.primaryMouseClick = mouseLoc;
+        this.level.primaryMouseClick = this.convertCoords(new Vector(mouseEvent.offsetX, mouseEvent.offsetY));
       }.bind(this)
     );
 
     app.input.registerMouseButtonDownListener(
     app.input.mouseButtons.MAIN,
       function(mouseEvent) {
-        var mouseLoc = new Vector(mouseEvent.offsetX, mouseEvent.offsetY);
-        var camera = this.camera;
-        mouseLoc.add(
-          camera.offset.scaled(camera.zoom).addScalars(-window.innerWidth/2, -window.innerHeight/2)
-        ).multiply(1/camera.zoom).addScalars(.5, .5);
-        this.level.primaryMouseClick = mouseLoc;
+        this.level.primaryMouseClick = this.convertCoords(new Vector(mouseEvent.offsetX, mouseEvent.offsetY));
       }.bind(this)
     );
 
+    console.log("gameScreen created");
   }
+
+
 
 
   // GameScreen is a subclass of Screen
   GameScreen.prototype = Object.create(Screen.prototype);
+
+  GameScreen.prototype.convertCoords = function(coords) {
+    coords.add(this.camera.offset.scaled(this.camera.zoom))
+      .addScalars(-window.innerWidth/2, -window.innerHeight/2)
+      .multiply(1/this.camera.zoom)
+      .addScalars(0.5, 0.5);
+    return coords;
+  };
 
   GameScreen.prototype.update = function(dt) {
     this.level.update(dt);

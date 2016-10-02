@@ -66,7 +66,6 @@ window.Level = (function() {
     var e = x < this.width - 1 && this.terrain[x+1][y] && this.terrain[x+1][y].isStandardTile();
     var tileImgId = (w ? 0 : 1) + (s ? 0 : 2) + (e ? 0 : 4) + (n ? 0 : 8);
     this.terrain[x][y].setSprite('tile'+tileImgId);
-    console.log(x + ", " + y + " | " + tileImgId);
   };
 
   Level.prototype.increaseWidth = function() {
@@ -142,11 +141,10 @@ window.Level = (function() {
       this.decreaseHeight();
     }
 
-    if (app.debug && this.primaryMouseClick) {
+    if (app.debug && !app.input.mouseMap[0] && this.primaryMouseClick) {
       this.primaryMouseClick.floor();
       var x = this.primaryMouseClick.x;
       var y = this.primaryMouseClick.y;
-      console.log(x + ", " + y);
       if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
         if (this.terrain[x][y] === null) {
           this.terrain[x][y] = new TerrainTile(x, y);
