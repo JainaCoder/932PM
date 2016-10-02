@@ -76,7 +76,6 @@ window.Player = (function() {
       var x = clone.x;
       var y = clone.y;      
       if (x >= 0 && x < this.level.width && y >= 0 && y < this.level.height) {
-        console.log("in");
         if(this.level.terrain[x][y] !== null && this.level.terrain[x][y].solid) {
             this.grappling = true;
             grav = false;
@@ -139,11 +138,11 @@ window.Player = (function() {
 
     if (horizontalHit && !this.grounded) {
         this.onWall = true;
-        this.jumpTimer = 0;
-        //this.acc.x *= -1;
-        
-        if(app.input.isKeyDown('W'))
-        this.vel.x *= -2;
+        if(app.input.isKeyDown('W')) {
+          this.vel.x *= -2;
+          this.jumpTimer = 0;
+        }
+      
       }
 
   };
