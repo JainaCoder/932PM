@@ -75,7 +75,21 @@ window.LoadingScreen = (function() {
       loader.add('tile'+i, "assets/tiles/" + i + ".png");
     }
 
+    addAvatarItem(loader, 'head');
+    addAvatarItem(loader, 'hip');
+    addAvatarItem(loader, 'leftFoot');
+    addAvatarItem(loader, 'leftLegBottom');
+    addAvatarItem(loader, 'leftLegTop');
+    addAvatarItem(loader, 'neck');
+    addAvatarItem(loader, 'rightFoot');
+    addAvatarItem(loader, 'rightLegBottom');
+    addAvatarItem(loader, 'rightLegTop');
+    addAvatarItem(loader, 'torso');
 
+  }
+
+  function addAvatarItem(loader, name) {
+    loader.add('avatar_' + name, "assets/avatar/" + name + ".png");
   }
 
   // GameScreen is a subclass of Screen

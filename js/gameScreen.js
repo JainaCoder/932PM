@@ -95,9 +95,9 @@ window.GameScreen = (function() {
       // zooming in and out just to show that it works
       camera.zoom = 70 + Math.sin(this.level.time/3) * 15;
 
-      // Move camera 90% towards player every second on each axis
+      // Move camera 200% towards player every second on each axis
       // TODO: deadzone?
-      camera.offset.add(camera.offset.diff(player.pos).multiply(0.9 * dt));
+      camera.offset.add(camera.offset.diff(player.pos).multiply(2.00 * dt));
     }
 
     // Save level
