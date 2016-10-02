@@ -42,6 +42,7 @@ app.input = {
   mouseLoc: {},
 
   mouseButtonUpListeners: [],
+  mouseButtonDownListeners: [],
 
   registerListener: function() {
 
@@ -89,7 +90,7 @@ app.input = {
   onMouseUp: function(event) {
     this.mouseMap[event.button] = false;
     for (var i = 0, l = this.mouseButtonUpListeners.length; i < l; i++) {
-      if (this.mouseButtonUpListeners[i].mouseButton == event.button) {
+      if (this.mouseButtonUpListeners[i].mouseButton === event.button) {
         this.mouseButtonUpListeners[i].callback(event);
       }
     }
@@ -97,6 +98,11 @@ app.input = {
 
   onMouseDown: function(event) {
     this.mouseMap[event.button] = true;
+    for (var i = 0, l = this.mouseButtonUpListeners.length; i < l; i++) {
+      if(this.mouseButtonDownListeners[i].mouseButton === event.button) {
+        this.mouseButtonDownListeners[i].callback(event);
+      }
+    }
   },
 
   onMouseMove: function(event) {
@@ -110,5 +116,9 @@ app.input = {
 
   registerMouseButtonUpListener: function(mouseButton, callback) {
     this.mouseButtonUpListeners.push({ mouseButton: mouseButton, callback: callback });
+  },
+  
+  registerMouseButtonDownListener: function(mouseButton, callback) {
+    this.mouseButtonDownListeners.push({ mouseButton: mouseButton, callback: callback });
   }
 };

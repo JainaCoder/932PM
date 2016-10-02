@@ -71,7 +71,16 @@ window.Player = (function() {
     }
     
     if (grappling) {
-      this.level.primaryMouseClick.floor();
+      console.log("in");
+      var clone = this.level.primaryMouseClick.clone().floor();
+      var x = clone.x;
+      var y = clone.y;
+      
+      if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+        if(this.level.terrain[x][y] !== null) {
+            vel = this.pos.clone().subtract(this.level.primaryMouseClick).multiply(6);
+          }
+      }
       
     }
 
@@ -79,7 +88,9 @@ window.Player = (function() {
     vel.multiply(1 - drag * dt);
 
     // gravity
-    acc.y += app.core.GRAV;
+    if(!grappling) {
+      acc.y += app.core.GRAV;
+    }
 
     vel.add(acc.scaled(dt));
 

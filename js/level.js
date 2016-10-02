@@ -222,7 +222,9 @@ window.Level = (function() {
         }
       }
     }
-
+    
+    stage.addChild(new PIXI.Graphics())
+    
     stage.addChild(stage);
   };
 
