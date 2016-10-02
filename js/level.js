@@ -1,4 +1,4 @@
-/*global TerrainTile Player*/
+/*global PIXI TerrainTile Player downloadJSON*/
 "use strict";
 
 var app = app || {};
@@ -253,7 +253,7 @@ window.Level = (function() {
 
     var graphics = new PIXI.Graphics();
 
-    if(this.player.grappling){
+    if(this.player.grappling) {
       graphics.beginFill(0x000000);
       graphics.lineStyle(0.1, 0x000000);
 
@@ -262,7 +262,7 @@ window.Level = (function() {
       graphics.endFill();
     }
 
-    stage.addChild(graphics)
+    stage.addChild(graphics);
 
     stage.addChild(stage);
   };

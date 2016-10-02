@@ -1,3 +1,4 @@
+/*global PIXI LoadingScreen*/
 "use strict";
 
 var app = app || {};
@@ -52,7 +53,7 @@ app.core = {
     app.core.gameLoop();
   },
 
-  onLoad: function(){
+  onLoad: function() {
     var debugLabel = new PIXI.Sprite(app.assets.debug.texture);
     app.core.debugLabel = debugLabel;
     debugLabel.scale = new PIXI.Point(20, 20);
@@ -89,7 +90,7 @@ app.core = {
 
     app.core.dt += delta;
 
-    while (app.core.dt > app.core.timeStep){
+    while (app.core.dt > app.core.timeStep) {
       app.core.update(app.core.timeStep);
       app.core.dt -= app.core.timeStep;
     }
@@ -98,7 +99,7 @@ app.core = {
 
   },
 
-  render: function(renderer) {
+  render: function() {
     // So right now how this works is that we have a PIXI.Container called
     // `stage` and each frame we're filling it with everything we want to
     // draw, and then calling renderer.render() a single time with it. This

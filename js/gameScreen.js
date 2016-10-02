@@ -1,3 +1,4 @@
+/*global PIXI Level app Vector*/
 "use strict";
 
 window.GameScreen = (function() {
@@ -40,7 +41,7 @@ window.GameScreen = (function() {
         this.level.primaryMouseClick = mouseLoc;
       }.bind(this)
     );
-    
+
     app.input.registerMouseButtonDownListener(
     app.input.mouseButtons.MAIN,
       function(mouseEvent) {

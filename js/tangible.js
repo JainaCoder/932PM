@@ -1,3 +1,4 @@
+/*global Entity Vector*/
 // Tangible extends Entity and gives AABB
 
 "use strict";
@@ -52,7 +53,7 @@ window.Tangible = (function() {
     var height = this.height;
 
     if (vert !== undefined) {
-      if (vert){
+      if (vert) {
         width -= cornerCut * 3;
       } else {
         height -= cornerCut * 3;
@@ -65,7 +66,7 @@ window.Tangible = (function() {
       x + width/2 > otherX - otherWidth/2 &&
       y - height / 2 < otherY + otherHeight/2 &&
       y + height / 2 > otherY - otherHeight / 2
-    )){
+    )) {
       return false;
     }
 
@@ -74,7 +75,7 @@ window.Tangible = (function() {
 
     var right = true;
     // find the more shallow
-    if (Math.abs(depthX2) < Math.abs(depthX)){
+    if (Math.abs(depthX2) < Math.abs(depthX)) {
       right = false;
       depthX = depthX2;
     }
@@ -83,15 +84,15 @@ window.Tangible = (function() {
     var depthY2 = y + height / 2 - (otherY - otherHeight / 2); // Top
 
     var top = true;
-    if (Math.abs(depthY2) < Math.abs(depthY)){
+    if (Math.abs(depthY2) < Math.abs(depthY)) {
       top = false;
       depthY = depthY2;
     }
 
-    if (Math.abs(depthY) > Math.abs(depthX) || depthY == 0 ){
+    if (Math.abs(depthY) > Math.abs(depthX) || depthY === 0 ) {
         // Intersecting from the left or right
       return new Vector(right? depthX : -depthX, 0);
-    } else if (Math.abs(depthX) > Math.abs(depthY) || depthX == 0) {
+    } else if (Math.abs(depthX) > Math.abs(depthY) || depthX === 0) {
       // Intersectiong from top or bottom
       //  return new Vector2(bTop ? -fDepthY : fDepthY, 0.0f);
       return new Vector(0, top ? depthY : -depthY);
@@ -101,7 +102,7 @@ window.Tangible = (function() {
   };
 
   // TODO: document what are for (just ask if you need to know -ben)
-  Tangible.prototype.testCollisionVert = function(otherX, otherY, otherWidth, otherHeight, cornerCut){
+  Tangible.prototype.testCollisionVert = function(otherX, otherY, otherWidth, otherHeight, cornerCut) {
     var x = this.pos.x;
     var y = this.pos.y;
     var width = this.width - cornerCut * 2.1;
@@ -136,7 +137,7 @@ window.Tangible = (function() {
       x + width/2 > otherX - otherWidth/2 &&
       y - height / 2 < otherY + otherHeight/2 &&
       y + height / 2 > otherY - otherHeight / 2
-    )){
+    )) {
       return false;
     }
 

@@ -1,9 +1,10 @@
+/*global PIXI Vector*/
 // Entity represents objects with a location, an image, and an update step
 
 "use strict";
 
 window.Entity = (function() {
-  function Entity(xLoc, yLoc){
+  function Entity(xLoc, yLoc) {
     this.img = new PIXI.Container();
     this.pos = new Vector(xLoc, yLoc);
   }
@@ -23,7 +24,7 @@ window.Entity = (function() {
 
   // subclasses can override this to signal when they should
   // be removed from the level
-  Entity.prototype.alive = function(renderer) {
+  Entity.prototype.alive = function() {
     return true;
   };
 

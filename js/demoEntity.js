@@ -1,7 +1,8 @@
+/*global PIXI Entity app*/
 "use strict";
 
 window.DemoEntity = (function() {
-  function DemoEntity(level, xLoc, yLoc){
+  function DemoEntity(level, xLoc, yLoc) {
     Entity.call(this, xLoc, yLoc);
 
     this.level = level;
@@ -13,7 +14,7 @@ window.DemoEntity = (function() {
 
     graphics.beginFill(app.palette.tertiary[Math.floor(Math.random() * app.palette.tertiary.length)]);
     graphics.moveTo(this.radius, 0);
-    for (var i = 0; i < this.points; i++){
+    for (var i = 0; i < this.points; i++) {
       var theta = Math.PI * 2 / this.points * i;
       graphics.lineTo(Math.cos(theta) * this.radius, Math.sin(theta) * this.radius);
     }
@@ -42,7 +43,7 @@ window.DemoEntity = (function() {
     stage.addChild(this.img);
   };
 
-  DemoEntity.prototype.alive = function(renderer) {
+  DemoEntity.prototype.alive = function() {
     var position = this.img.position;
     var radius = this.radius;
     return position.x > -radius && position.x < this.level.width + radius &&

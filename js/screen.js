@@ -1,7 +1,7 @@
 "use strict";
 
 window.Screen = (function() {
-  function Screen(){ }
+  function Screen() { }
 
   Screen.prototype.update = function(dt) { };
   Screen.prototype.render = function(stage) { };

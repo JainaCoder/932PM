@@ -9,12 +9,12 @@ var mapDataValues = {
 };
 
 window.MapData = (function() {
-  function MapData(width, height){
+  function MapData(width, height) {
     this.width = width;
     this.height = height;
     this.terrain = [];
-    for (var y = 0; y < height; i++){
-      for (var x = 0; x < width; x++){
+    for (var y = 0; y < height; y++) {
+      for (var x = 0; x < width; x++) {
         this.terrain[x][y] = mapDataValues.air;
       }
     }

@@ -1,8 +1,9 @@
+/*global PIXI Tangible app Vector*/
 "use strict";
 
 window.Player = (function() {
 
-  function Player(xLoc, yLoc, level){
+  function Player(xLoc, yLoc, level) {
     Tangible.call(this, xLoc, yLoc, 1, 1, 1, level);
 
     // woo, placeholder
@@ -70,25 +71,24 @@ window.Player = (function() {
     } else {
       this.jumpTimer = this.jumpTimerMax;
     }
-    
+
     if (app.input.mouseMap[0]) {
       var clone = this.level.primaryMouseClick.clone().floor();
       var x = clone.x;
-      var y = clone.y;      
+      var y = clone.y;
       if (x >= 0 && x < this.level.width && y >= 0 && y < this.level.height) {
         if(this.level.terrain[x][y] !== null && this.level.terrain[x][y].solid) {
-            this.grappling = true;
-            grav = false;
-            acc.add(this.level.primaryMouseClick.clone().subtract(this.pos).multiply(15));
-          }
+          this.grappling = true;
+          grav = false;
+          acc.add(this.level.primaryMouseClick.clone().subtract(this.pos).multiply(15));
+        }
       }
-      
+
     }
-    
-    if (!app.input.mouseMap[0])
-      {
-        this.grappling = false;
-      }
+
+    if (!app.input.mouseMap[0]) {
+      this.grappling = false;
+    }
 
     // TODO: move some of this logic to `Tangible`
     vel.multiply(1 - drag * dt);
@@ -119,7 +119,7 @@ window.Player = (function() {
 
   // NOTE: this is used by `level` to determine if an entity should be removed from the level,
   // which may not be how we want to determine player death, so that should be handled elsewhere
-  Player.prototype.alive = function(renderer) {
+  Player.prototype.alive = function() {
     return true;
   };
 
@@ -137,13 +137,12 @@ window.Player = (function() {
     }
 
     if (horizontalHit && !this.grounded) {
-        this.onWall = true;
-        if(app.input.isKeyDown('W')) {
-          this.vel.x *= -2;
-          this.jumpTimer = 0;
-        }
-      
+      this.onWall = true;
+      if(app.input.isKeyDown('W')) {
+        this.vel.x *= -2;
+        this.jumpTimer = 0;
       }
+    }
 
   };
 

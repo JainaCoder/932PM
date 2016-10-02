@@ -1,3 +1,4 @@
+/*global PIXI*/
 // 2D vector class object for further use in js.
 // Assuming initial point is the origin
 // for use only with translations
