@@ -16,7 +16,6 @@ app.core = {
 
   screen: null,
 
-
   lastTime: 0, // Used to calculate delta time
   dt: 0,
   timeStep: 1/60,
@@ -45,7 +44,7 @@ app.core = {
     // TODO: resize when window resizes
     renderer.resize(window.innerWidth, window.innerHeight);
 
-    renderer.backgroundColor = app.palette.primary[0];
+    renderer.backgroundColor = '0xCD0000'; //app.palette.primary[0];
 
     app.core.screen = new LoadingScreen();
 

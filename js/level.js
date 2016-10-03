@@ -60,10 +60,10 @@ window.Level = (function() {
 
   Level.prototype.checkAdjacentTiles = function(x, y) {
     if (x < 0 || x >= this.width || y < 0 || y >= this.height || !this.terrain[x][y]) return;
-    var n = y > 0 && this.terrain[x][y-1] && this.terrain[x][y-1].isStandardTile();
-    var s = y < this.height - 1 && this.terrain[x][y+1] && this.terrain[x][y+1].isStandardTile();
-    var w = x > 0 && this.terrain[x-1][y] && this.terrain[x-1][y].isStandardTile();
-    var e = x < this.width - 1 && this.terrain[x+1][y] && this.terrain[x+1][y].isStandardTile();
+    var n = y === 0               || (this.terrain[x][y-1] && this.terrain[x][y-1].isStandardTile());
+    var s = y === this.height - 1 || (this.terrain[x][y+1] && this.terrain[x][y+1].isStandardTile());
+    var w = x === 0               || (this.terrain[x-1][y] && this.terrain[x-1][y].isStandardTile());
+    var e = x === this.width - 1  || (this.terrain[x+1][y] && this.terrain[x+1][y].isStandardTile());
     var tileImgId = (w ? 0 : 1) + (s ? 0 : 2) + (e ? 0 : 4) + (n ? 0 : 8);
     this.terrain[x][y].setSprite('tile'+tileImgId);
   };
@@ -231,6 +231,15 @@ window.Level = (function() {
   // we're putting all PIXI.DisplayObject's into a PIXI.Container so that we can apply
   // a matrix to all of them, seperate from any potential UI
   Level.prototype.render = function(stage) {
+
+    var levelBackground = new PIXI.Graphics();
+
+    levelBackground.beginFill(app.palette.primary[0]);
+    levelBackground.drawRect(-0.5, -0.5, this.width, this.height);
+    levelBackground.endFill();
+
+
+    stage.addChild(levelBackground);
 
     for (var i = 0, l = this.tangibles.length; i < l; i++) {
       this.tangibles[i].render(stage);
