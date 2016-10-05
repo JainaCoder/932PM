@@ -24,6 +24,7 @@ window.Player = (function() {
     this.acc = new Vector();
     this.hookLen = 2;
     this.grappling = false;
+    this.prevUpHeld = false;
 
     // This determines how long after jumping we'll care if the user is still pressing the up button
     this.jumpTimerMax = 0.5;
@@ -58,7 +59,19 @@ window.Player = (function() {
     // TODO: maybe split this into x and y directions, based on if you're against a wall or something
     var drag = 3;
 
-    if (upHeld && !this.grappling) {
+    if(upHeld && !this.grappling && this.onWall && !this.prevUpHeld && (rightHeld || leftHeld)) {
+      var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
+      jumpMult *= jumpMult * jumpMult;
+        
+      console.log('in');
+      acc.y -= 250 * jumpMult;
+      this.vel.x *= -2
+        
+        
+        
+    }
+    
+    else if (upHeld && !this.grappling && !this.onWall &&!this.grounded) {
       if (this.jumpTimer < this.jumpTimerMax) {
         // this determines the relationship between the jump timer and how much the character
         // actually goes up
@@ -68,7 +81,9 @@ window.Player = (function() {
         acc.y -= 250 * jumpMult;
       }
       this.jumpTimer += dt;
-    } else {
+    }
+        
+    else {
       this.jumpTimer = this.jumpTimerMax;
     }
 
@@ -114,6 +129,7 @@ window.Player = (function() {
     // changed to true during collision detection
     this.grounded = false;
     this.onWall = false;
+    this.prevUpHeld = upHeld;
 
   };
 
