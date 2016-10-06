@@ -16,6 +16,11 @@ window.Level = (function() {
     this.width = width;
     this.height = height;
 
+    this.levelBackground = new PIXI.Graphics();
+    this.levelBackground.beginFill(app.palette.primary[0]);
+    this.levelBackground.drawRect(-0.5, -0.5, this.width, this.height);
+    this.levelBackground.endFill();
+
     this.intangibles = [];
     this.tangibles = [];
     this.player = new Player(4, height/2, this);
@@ -81,7 +86,7 @@ window.Level = (function() {
     for (y = 0; y < this.height; y++) {
       this.updateAdjacentTiles(this.width-2, y);
     }
-    console.log("level width increased to " + this.width);
+    this.onSizeChange();
   };
 
   Level.prototype.increaseHeight = function() {
@@ -95,7 +100,7 @@ window.Level = (function() {
     for (x = 0; x < this.width; x++) {
       this.updateAdjacentTiles(x, this.height-2);
     }
-    console.log("level height increased to " + this.height);
+    this.onSizeChange();
   };
 
   Level.prototype.decreaseWidth = function() {
@@ -107,7 +112,7 @@ window.Level = (function() {
     for (y = 0; y < this.height; y++) {
       this.updateAdjacentTiles(this.width-1, y);
     }
-    console.log("level width decreased to " + this.width);
+    this.onSizeChange();
   };
 
   Level.prototype.decreaseHeight = function() {
@@ -119,7 +124,14 @@ window.Level = (function() {
     for (x = 0; x < this.width; x++) {
       this.updateAdjacentTiles(x, this.height-1);
     }
-    console.log("level height increased to " + this.height);
+    this.onSizeChange();
+  };
+
+  Level.prototype.onSizeChange = function() {
+    this.levelBackground = new PIXI.Graphics();
+    this.levelBackground.beginFill(app.palette.primary[0]);
+    this.levelBackground.drawRect(-0.5, -0.5, this.width, this.height);
+    this.levelBackground.endFill();
   };
 
   Level.prototype.update = function(dt) {
@@ -232,14 +244,7 @@ window.Level = (function() {
   // a matrix to all of them, seperate from any potential UI
   Level.prototype.render = function(stage) {
 
-    var levelBackground = new PIXI.Graphics();
-
-    levelBackground.beginFill(app.palette.primary[0]);
-    levelBackground.drawRect(-0.5, -0.5, this.width, this.height);
-    levelBackground.endFill();
-
-
-    stage.addChild(levelBackground);
+    stage.addChild(this.levelBackground);
 
     for (var i = 0, l = this.tangibles.length; i < l; i++) {
       this.tangibles[i].render(stage);
