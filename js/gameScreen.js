@@ -48,21 +48,20 @@ window.GameScreen = (function() {
   }
 
 
-
-
   // GameScreen is a subclass of Screen
   GameScreen.prototype = Object.create(Screen.prototype);
 
   GameScreen.prototype.convertCoords = function(coords) {
-    coords.add(this.camera.offset.scaled(this.camera.zoom))
+    return coords.add(this.camera.offset.scaled(this.camera.zoom))
       .addScalars(-window.innerWidth/2, -window.innerHeight/2)
       .multiply(1/this.camera.zoom)
       .addScalars(0.5, 0.5);
-    return coords;
   };
 
+
   GameScreen.prototype.update = function(dt) {
-    this.level.update(dt);
+    this.gameMouseLoc = this.convertCoords(app.input.mouseLoc.clone());
+    this.level.update(app.debug ? 0 : dt);
 
     // Update camera
     var camera = this.camera;
@@ -75,16 +74,16 @@ window.GameScreen = (function() {
       var downHeld = app.input.isKeyDown('S');
       var zoomInHeld = app.input.isKeyDown('E');
       var zoomOutHeld = app.input.isKeyDown('Q');
-      var scrollSpeed = 10.0;
+      var scrollSpeed = 500 / camera.zoom * dt;
       if (leftHeld) {
-        camera.offset.x -= scrollSpeed * dt;
+        camera.offset.x -= scrollSpeed;
       } else if (rightHeld) {
-        camera.offset.x += scrollSpeed * dt;
+        camera.offset.x += scrollSpeed;
       }
       if (upHeld) {
-        camera.offset.y -= scrollSpeed * dt;
+        camera.offset.y -= scrollSpeed;
       } else if (downHeld) {
-        camera.offset.y += scrollSpeed * dt;
+        camera.offset.y += scrollSpeed;
       }
       if (zoomInHeld) {
         camera.zoom += 1.5 * dt * camera.zoom;
@@ -92,12 +91,28 @@ window.GameScreen = (function() {
         camera.zoom -= 1.5 * dt * camera.zoom;
       }
     } else {
-      // zooming in and out just to show that it works
-      camera.zoom = 70 + Math.sin(this.level.time/3) * 15;
+      var zoomGoal = Math.max(40, 60 - player.pos.diff(this.gameMouseLoc).magnitude() * 1);
+      camera.zoom += (zoomGoal - camera.zoom) * 2.0 * dt;
 
-      // Move camera 200% towards player every second on each axis
-      // TODO: deadzone?
-      camera.offset.add(camera.offset.diff(player.pos).multiply(2.00 * dt));
+      var currentX = player.pos.x;
+      var camAllowance = window.innerWidth/camera.zoom / 6;
+      var wallOffset = -(window.innerWidth*0.5 - app.input.mouseLoc.x)/camera.zoom;
+      var leftWall = currentX - camAllowance + wallOffset;
+      var rightWall = currentX + camAllowance + wallOffset;
+
+      var goalOffset = new Vector(
+        Math.min (rightWall, Math.max(camera.offset.x, leftWall)),
+        Math.min (
+          this.level.height - window.innerHeight/2/camera.zoom,
+          Math.max(
+            0 + window.innerHeight/2/camera.zoom,
+            player.pos.y
+          )
+        )
+      );
+
+      camera.offset.add(camera.offset.diff(goalOffset).multiply(10.00 * dt));
+
     }
 
     // Save level
@@ -118,6 +133,7 @@ window.GameScreen = (function() {
 
     this.level.render(this.levelContainer);
     stage.addChild(this.levelContainer);
+
     // UI rendering could happen here?
   };
 

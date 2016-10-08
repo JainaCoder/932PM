@@ -1,3 +1,4 @@
+/*global Vector*/
 "use strict";
 
 var app = app || {};
@@ -39,7 +40,7 @@ app.input = {
     FOURTH: 4, // Usuually forward button
   },
 
-  mouseLoc: {},
+  mouseLoc: new Vector(),
 
   mouseButtonUpListeners: [],
   mouseButtonDownListeners: [],
@@ -106,8 +107,7 @@ app.input = {
   },
 
   onMouseMove: function(event) {
-    this.mouseLoc.x = event.offsetX;
-    this.mouseLoc.y = event.offsetY;
+    this.mouseLoc = new Vector(event.offsetX, event.offsetY);
   },
 
   registerKeyUpListener: function(keyCode, callback) {
@@ -117,7 +117,7 @@ app.input = {
   registerMouseButtonUpListener: function(mouseButton, callback) {
     this.mouseButtonUpListeners.push({ mouseButton: mouseButton, callback: callback });
   },
-  
+
   registerMouseButtonDownListener: function(mouseButton, callback) {
     this.mouseButtonDownListeners.push({ mouseButton: mouseButton, callback: callback });
   }

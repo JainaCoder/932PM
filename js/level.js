@@ -217,12 +217,6 @@ window.Level = (function() {
               ter.onCollide(t1, false);
               t1.pos.x += colHoriz;
             }
-
-            //dectect both at once?
-            /*t1.onCollideTerrain(ter, x, y, colVert, colHoriz);
-            ter.onCollide(t1, true);
-            t1.pos.y += colVert;
-            t1.pos.x += colHoriz;*/
           }
         }
       }
