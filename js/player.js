@@ -19,15 +19,24 @@ window.Player = (function() {
 
     this.img.addChild(body);
 
+    var neck = new PIXI.Sprite(app.assets.avatar_neck.texture);
+    this.neck = neck;
+    neck.width = this.width;
+    neck.height = this.height;
+    neck.x = -neck.width/2;
+    neck.y = -neck.height/1.9;
+    this.img.addChild(neck);
+
     var head = new PIXI.Sprite(app.assets.avatar_head.texture);
     this.head = head;
     head.width = this.width;
     head.height = this.height;
 
+
     // sprite coordinates are based off their upper left corner, so if we want their center
     // to be on the player's center, we have to move them up and to the left
   //  head.x = -head.width/5;
-    head.y = -head.height/4;
+    head.y = -head.height/4.5;
 
     head.pivot = new PIXI.Point(135, 80);
 
@@ -64,9 +73,9 @@ window.Player = (function() {
     var grav = true;
 
     var lookDiff = this.pos.diff(this.level.mouseLoc);
-    this.img.scale.x = lookDiff.x < 0.5 ? -1 : 1;
+    this.img.scale.x = lookDiff.x < 0 ? -1 : 1;
     lookDiff.x = Math.abs(lookDiff.x);
-    var lookAngle = lookDiff.direction();
+    var lookAngle = Math.min(1, Math.max(-1, lookDiff.direction()));
 
     this.head.rotation = lookAngle;
 
@@ -112,13 +121,13 @@ window.Player = (function() {
       var x = clone.x;
       var y = clone.y;
       if (x >= 0 && x < this.level.width && y >= 0 && y < this.level.height) {
-        
+
         for(var i = this.pos.x; i < this.level.width; i += Math.cos(lookAngle)) {
           for(var h = this.pos.y; h < this.level.height; h += Math.sin(lookAngle)) {
             var testI = Math.floor(i);
             var testH = Math.floor(h);
-            
-           
+
+
             if(this.level.terrain[testI][testH] !== null && this.level.terrain[testI][testH].solid) {
               this.grappling = true;
               grav = false;
@@ -127,7 +136,7 @@ window.Player = (function() {
             }
           }
         }
-        
+
         /*if(this.level.terrain[x][y] !== null && this.level.terrain[x][y].solid) {
           this.grappling = true;
           grav = false;
@@ -135,6 +144,7 @@ window.Player = (function() {
           acc.add(this.level.primaryMouseClick.clone().subtract(this.pos).multiply(15));
         }*/
       }
+
 
     }
 

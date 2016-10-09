@@ -55,7 +55,7 @@ window.GameScreen = (function() {
     return coords.add(this.camera.offset.scaled(this.camera.zoom))
       .addScalars(-window.innerWidth/2, -window.innerHeight/2)
       .multiply(1/this.camera.zoom)
-      .addScalars(0.5, 0.5);
+    //  .addScalars(0.5, 0.5);
   };
 
 
