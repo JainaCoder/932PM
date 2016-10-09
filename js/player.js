@@ -112,24 +112,17 @@ window.Player = (function() {
       console.log(this.pos.x);
       console.log(this.pos.y);
       
-      for(var w = this.pos.x; w < this.level.width && w > 0; w += Math.cos(lookAngle)) {
-        for(var h = this.pos.y; h < this.level.height && h > 0; h += Math.sin(lookAngle)) {
-          var testW = w;
-          var testH = h;
-          
-          Math.floor(testW);
-          Math.floor(testH);
+      for(var c = 0; c < this.level.width && c < this.level.height; c++) {
+        var testW = this.pos.x + Math.floor(Math.cos(lookAngle) * c);
+        var testH = this.pos.y + Math.floor(Math.sin(lookAngle) * c);
 
-          if(this.level.terrain[testW][testH] !== null && this.level.terrain[testW][testH].solid) {
-            console.log(testW);
-            console.log(testH);
-            this.grappling = true;
-            grav = false;
-            this.hookPos = new Vector(testW, testH);
-            console.dir(this.hookPos);
-            w = this.level.width+1;
-            h = this.level.height+1;
-          }
+        if(this.level.terrain[testW][testH] !== null && this.level.terrain[testW][testH].solid) {
+          console.log(testW);
+          console.log(testH);
+          this.grappling = true;
+          grav = false;
+          this.hookPos = new Vector(testW, testH);
+          console.dir(this.hookPos);
         }
       }
         
