@@ -59,7 +59,16 @@ window.Player = (function() {
     // TODO: maybe split this into x and y directions, based on if you're against a wall or something
     var drag = 3;
     
-    if (upHeld && !this.grappling && !this.onWall) {
+    if(app.input.isKeyDown('W') && this.onWall && !this.grappling && !this.prevUpHeld) {    
+        var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
+        jumpMult *= jumpMult * jumpMult;
+
+        console.log('in');
+        this.acc.y -= 250 * jumpMult;
+        this.vel.x *= -2  
+      }
+    
+    else if (upHeld && !this.grappling && !this.onWall) {
       if (this.jumpTimer < this.jumpTimerMax) {
         // this determines the relationship between the jump timer and how much the character
         // actually goes up
@@ -141,20 +150,6 @@ window.Player = (function() {
     
     if (horizontalHit) {
       this.onWall = true;
-      
-      console.log("is up held: " + app.input.isKeyDown('W'));
-      console.log("is not grappling: " + !this.grappling);
-      console.log("prevUpHeld: " + !this.prevUpHeld);
-      
-      if(app.input.isKeyDown('W') && !this.grappling && !this.prevUpHeld) {
-        
-        var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
-        jumpMult *= jumpMult * jumpMult;
-
-        console.log('in');
-        acc.y -= 250 * jumpMult;
-        this.vel.x *= -2  
-      }
     }
 
   };
