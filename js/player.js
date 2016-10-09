@@ -75,9 +75,10 @@ window.Player = (function() {
     var grav = true;
 
     var lookDiff = this.pos.diff(this.level.mouseLoc);
-    this.img.scale.x = lookDiff.x < 0 ? -1 : 1;
-    lookDiff.x = Math.abs(lookDiff.x);
-    var lookAngle = Math.min(1, Math.max(-1, lookDiff.direction()));
+    var headLookDiff = lookDiff.clone();
+    this.img.scale.x = headLookDiff.x < 0 ? -1 : 1;
+    headLookDiff.x = Math.abs(headLookDiff.x);
+    var lookAngle = Math.min(1, Math.max(-1, headLookDiff.direction()));
 
     this.head.rotation = lookAngle;
 
@@ -118,30 +119,24 @@ window.Player = (function() {
 
     if (app.input.mouseMap[0] && this.level.primaryMouseClick && !this.prevMouseDown) {
 
-      console.log(this.pos.x);
-      console.log(this.pos.y);
-
-      for(var w = this.pos.x; w < this.level.width && w > 0; w += Math.cos(lookAngle)) {
-        for(var h = this.pos.y; h < this.level.height && h > 0; h += Math.sin(lookAngle)) {
-          var testW = w;
-          var testH = h;
-
-          Math.floor(testW);
-          Math.floor(testH);
-
-          if(this.level.terrain[testW][testH] !== null && this.level.terrain[testW][testH].solid) {
-            console.log(testW);
-            console.log(testH);
-            this.grappling = true;
-            grav = false;
-            this.hookPos = new Vector(testW, testH);
-            console.dir(this.hookPos);
-            w = this.level.width+1;
-            h = this.level.height+1;
-          }
-        }
+      var hit = this.level.firstTerrainHitInLine(this.pos, this.level.mouseLoc);
+      if (hit) {
+        console.log("latched " + hit.x + ", " + hit.y)
+        console.log(hit)
+        this.grappling = true;
+        grav = false;
+        this.hookPos = hit;
+        console.log("hitPos: " + this.hookPos.x + ", " + this.hookPos.y);
+      } else {
+        console.log("missed")
       }
-        
+
+      // console.log(this.pos.x);
+      // console.log(this.pos.y);
+
+
+
+
         /*if(this.level.terrain[x][y] !== null && this.level.terrain[x][y].solid) {
           this.grappling = true;
           grav = false;
@@ -153,7 +148,7 @@ window.Player = (function() {
     }
 
     if(this.grappling) {
-      acc.add(this.hookPos.subtract(this.pos).multiply(15));
+      acc.add(this.pos.diff(this.hookPos).multiply(15));
     }
 
     if (!app.input.mouseMap[0]) {

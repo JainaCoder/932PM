@@ -1,4 +1,4 @@
-/*global PIXI TerrainTile Player downloadJSON*/
+/*global PIXI TerrainTile Player downloadJSON Vector*/
 "use strict";
 
 var app = app || {};
@@ -233,6 +233,137 @@ window.Level = (function() {
       }
     }
   }
+
+  /**
+   * Finds the first terrain found in a line, and optionally its intersection point.
+   * @param p1 the starting point of the search
+   * @param p2 the end point of the search
+   * @return a hit object containing the first hit object found, and, if findPoint is true, the intersection point. Returns null if no terrain was found.
+   */
+  Level.prototype.firstTerrainHitInLine = function(p1, p2) {
+    var slope = (p2.y-p1.y)/(p2.x-p1.x);
+    var intercept = p1.y-slope*p1.x;
+    var firstGridX = Math.floor(p2.x);
+    var lastGridX = Math.floor(p1.x);
+    // probs can simplify this
+    var maxX = Math.max(0, Math.min( Math.max(firstGridX, lastGridX), this.width - 1));
+    var minX = Math.max(0, Math.min( Math.min(firstGridX, lastGridX), this.width - 1));
+
+    var goingRight = p2.x>p1.x;
+
+    var t;
+
+    var subP1 = new Vector();
+    var subP2 = new Vector();
+
+
+    if (goingRight) {
+
+      if (minX === maxX) {
+        t = this.checkColumn(minX, p1, p2);
+      }else{
+        subP2.x = (minX + 1);
+        subP2.y = slope*(minX + 1) + intercept;
+        t = this.checkColumn(minX, p1,subP2);
+      }
+      if (t !== null) return t;
+
+      for(var gridX = minX + 1; gridX < maxX; gridX++) {
+
+        subP1.x = gridX;
+        subP1.y = slope*(gridX) + intercept;
+        subP2.x = (gridX+1);
+        subP2.y = slope*(gridX + 1) + intercept;
+        t = this.checkColumn(gridX, subP1, subP2);
+        if (t !== null) return t;
+
+      }
+
+      if (minX !== maxX) {
+        subP1.x = maxX;
+        subP1.y = slope*(maxX) + intercept;
+        t = this.checkColumn(maxX, subP1, p2);
+        if (t !== null) return t;
+      }
+
+    }else{
+
+      if (minX === maxX) {
+        t = this.checkColumn(maxX, p1, p2);
+      }else{
+        subP2.x = maxX;
+        subP2.y = slope*(maxX) + intercept;
+        t = this.checkColumn(maxX, p1, subP2);
+      }
+
+      if (t !== null) return t;
+
+      for(var gridX = maxX - 1; gridX > minX; gridX--) {
+
+        subP1.x = (gridX+1);
+        subP1.y = slope*(gridX + 1) + intercept;
+        subP2.x = gridX;
+        subP2.y = slope*(gridX) + intercept;
+        t = this.checkColumn(gridX, subP1, subP2);
+        if (t !== null) return t;
+
+      }
+
+      if (minX !== maxX) {
+        subP1.x = (minX + 1)-1;
+        subP1.y = slope*(minX + 1) + intercept;
+        subP2.x =  Math.max(0, p2.x);
+        subP2.y = slope*(subP2.x) + intercept;
+        t = this.checkColumn(minX, subP1, subP2);
+        if (t !== null) return t;
+      }
+
+    }
+
+    return null;
+  };
+
+  /**
+    * Finds the first terrain in a line, and optionally its point of intersection
+    * @param p1 the starting point of the search. Must be within gridX for valid results
+    * @param p2 the end point of the search. Must be within gridX for valid results
+    * @param findPoint if true, the intersection point will be found
+    * @return a hit object containing the first hit object found, and, if findPoint is true, the intersection point. Returns null if no terrain was found.
+    */
+  Level.prototype.checkColumn = function(gridX, p1, p2) {
+
+    var startY = Math.floor(p1.y);
+    var endY = Math.floor(p2.y);
+    var goingUp = p2.y>p1.y;
+    var maxY = Math.min(Math.max(startY, endY), this.height-1);
+    var minY = Math.max(Math.min(startY, endY), 0);
+    var t;
+    if (goingUp) {
+      for (var gridY = minY; gridY <= maxY; gridY++) {
+        t = this.terrain[gridX][gridY];
+        if (t !== null && t.solid) {
+          return new Vector(gridX, gridY);
+          // var point = t.intersectionPoint(p1,p2);
+          // if (point !== null) {
+          //   return point;
+          // }
+        }
+      }
+    }else{
+      for (var gridY = maxY; gridY >= minY; gridY--) {
+        t = this.terrain[gridX][gridY];
+        if (t !== null && t.solid) {
+          // var point = t.intersectionPoint(p1,p2);
+          // if (point !== null) {
+          //   return point;
+          // }
+          return new Vector(gridX, gridY);
+        }
+      }
+    }
+    return null;
+  };
+
 
   // we're putting all PIXI.DisplayObject's into a PIXI.Container so that we can apply
   // a matrix to all of them, seperate from any potential UI
