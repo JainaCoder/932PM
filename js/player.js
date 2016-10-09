@@ -112,11 +112,28 @@ window.Player = (function() {
       var x = clone.x;
       var y = clone.y;
       if (x >= 0 && x < this.level.width && y >= 0 && y < this.level.height) {
-        if(this.level.terrain[x][y] !== null && this.level.terrain[x][y].solid) {
+        
+        for(var i = this.pos.x; i < this.level.width; i += Math.cos(lookAngle)) {
+          for(var h = this.pos.y; h < this.level.height; h += Math.sin(lookAngle)) {
+            var testI = Math.floor(i);
+            var testH = Math.floor(h);
+            
+           
+            if(this.level.terrain[testI][testH] !== null && this.level.terrain[testI][testH].solid) {
+              this.grappling = true;
+              grav = false;
+              acc.add(this.level.mouseLoc.clone().subtract(this.pos).multiply(15));
+              break;
+            }
+          }
+        }
+        
+        /*if(this.level.terrain[x][y] !== null && this.level.terrain[x][y].solid) {
           this.grappling = true;
           grav = false;
+          var grapVec = new Vector(Math.cos(lookAngle), Math.sin(lookAngle))
           acc.add(this.level.primaryMouseClick.clone().subtract(this.pos).multiply(15));
-        }
+        }*/
       }
 
     }

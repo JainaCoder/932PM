@@ -84,6 +84,9 @@ window.LoadingScreen = (function() {
     addAvatarItem(loader, 'rightLegBottom');
     addAvatarItem(loader, 'rightLegTop');
     addAvatarItem(loader, 'torso');
+    
+    loader.add('hookRope', 'assets/hook/Rope.png');
+    loader.add('hook', 'assets/hook/Hook.png');
 
   }
 
