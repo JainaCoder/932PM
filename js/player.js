@@ -50,6 +50,8 @@ window.Player = (function() {
     this.hookLen = 2;
     this.grappling = false;
     this.prevUpHeld = false;
+    this.hookPos = new Vector();
+    this.prevMouseDown = false;
 
     // This determines how long after jumping we'll care if the user is still pressing the up button
     this.jumpTimerMax = 0.5;
@@ -94,8 +96,6 @@ window.Player = (function() {
     if(app.input.isKeyDown('W') && this.onWall && !this.grappling && !this.prevUpHeld) {
         var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
         jumpMult *= jumpMult * jumpMult;
-
-        console.log('in');
         this.acc.y -= 250 * jumpMult;
         this.vel.x *= -2
       }
@@ -116,36 +116,44 @@ window.Player = (function() {
       this.jumpTimer = this.jumpTimerMax;
     }
 
-    if (app.input.mouseMap[0] && this.level.primaryMouseClick) {
-      var clone = this.level.primaryMouseClick.clone().floor();
-      var x = clone.x;
-      var y = clone.y;
-      if (x >= 0 && x < this.level.width && y >= 0 && y < this.level.height) {
+    if (app.input.mouseMap[0] && this.level.primaryMouseClick && !this.prevMouseDown) {
 
-        for(var i = this.pos.x; i < this.level.width; i += Math.cos(lookAngle)) {
-          for(var h = this.pos.y; h < this.level.height; h += Math.sin(lookAngle)) {
-            var testI = Math.floor(i);
-            var testH = Math.floor(h);
+      console.log(this.pos.x);
+      console.log(this.pos.y);
 
+      for(var w = this.pos.x; w < this.level.width && w > 0; w += Math.cos(lookAngle)) {
+        for(var h = this.pos.y; h < this.level.height && h > 0; h += Math.sin(lookAngle)) {
+          var testW = w;
+          var testH = h;
 
-            if(this.level.terrain[testI][testH] !== null && this.level.terrain[testI][testH].solid) {
-              this.grappling = true;
-              grav = false;
-              acc.add(this.level.mouseLoc.clone().subtract(this.pos).multiply(15));
-              break;
-            }
+          Math.floor(testW);
+          Math.floor(testH);
+
+          if(this.level.terrain[testW][testH] !== null && this.level.terrain[testW][testH].solid) {
+            console.log(testW);
+            console.log(testH);
+            this.grappling = true;
+            grav = false;
+            this.hookPos = new Vector(testW, testH);
+            console.dir(this.hookPos);
+            w = this.level.width+1;
+            h = this.level.height+1;
           }
         }
-
+      }
+        
         /*if(this.level.terrain[x][y] !== null && this.level.terrain[x][y].solid) {
           this.grappling = true;
           grav = false;
           var grapVec = new Vector(Math.cos(lookAngle), Math.sin(lookAngle))
           acc.add(this.level.primaryMouseClick.clone().subtract(this.pos).multiply(15));
         }*/
-      }
 
 
+    }
+
+    if(this.grappling) {
+      acc.add(this.hookPos.subtract(this.pos).multiply(15));
     }
 
     if (!app.input.mouseMap[0]) {
@@ -176,6 +184,7 @@ window.Player = (function() {
     // changed to true during collision detection
     this.onWall = false;
     this.prevUpHeld = upHeld;
+    this.prevMouseDown = app.input.mouseMap[0];
 
   };
 
