@@ -26,6 +26,10 @@
   console.log(PIXI);
   
   window.onload = app.core.init
+  
+  window.oncontextmenu = function() {
+    return false;
+  }
 
     // TODO: why isnt this working?
   window.onresize = function () { console.log("on resize event fired") }

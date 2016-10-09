@@ -58,20 +58,8 @@ window.Player = (function() {
     // slowdown percent per second
     // TODO: maybe split this into x and y directions, based on if you're against a wall or something
     var drag = 3;
-
-    if(upHeld && !this.grappling && this.onWall && !this.prevUpHeld && (rightHeld || leftHeld)) {
-      var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
-      jumpMult *= jumpMult * jumpMult;
-        
-      console.log('in');
-      acc.y -= 250 * jumpMult;
-      this.vel.x *= -2
-        
-        
-        
-    }
     
-    else if (upHeld && !this.grappling && !this.onWall &&!this.grounded) {
+    if (upHeld && !this.grappling && !this.onWall) {
       if (this.jumpTimer < this.jumpTimerMax) {
         // this determines the relationship between the jump timer and how much the character
         // actually goes up
@@ -127,7 +115,6 @@ window.Player = (function() {
 
     // these are determined each frame, these are the defaults, they are potentially
     // changed to true during collision detection
-    this.grounded = false;
     this.onWall = false;
     this.prevUpHeld = upHeld;
 
@@ -151,12 +138,22 @@ window.Player = (function() {
       }
 
     }
-
-    if (horizontalHit && !this.grounded) {
+    
+    if (horizontalHit) {
       this.onWall = true;
-      if(app.input.isKeyDown('W')) {
-        this.vel.x *= -2;
-        this.jumpTimer = 0;
+      
+      console.log("is up held: " + app.input.isKeyDown('W'));
+      console.log("is not grappling: " + !this.grappling);
+      console.log("prevUpHeld: " + !this.prevUpHeld);
+      
+      if(app.input.isKeyDown('W') && !this.grappling && !this.prevUpHeld) {
+        
+        var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
+        jumpMult *= jumpMult * jumpMult;
+
+        console.log('in');
+        acc.y -= 250 * jumpMult;
+        this.vel.x *= -2  
       }
     }
 
