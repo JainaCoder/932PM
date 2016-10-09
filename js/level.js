@@ -264,7 +264,7 @@ window.Level = (function() {
       graphics.lineStyle(0.1, 0x000000);
 
       graphics.moveTo(this.player.pos.x, this.player.pos.y);
-      graphics.lineTo(this.primaryMouseClick.x, this.primaryMouseClick.y);
+      graphics.lineTo(this.player.hookPos.x, this.player.hookPos.y);
       graphics.endFill();
     }
 
