@@ -59,13 +59,14 @@ window.Player = (function() {
     // TODO: maybe split this into x and y directions, based on if you're against a wall or something
     var drag = 3;
     
+    //walljump
     if(app.input.isKeyDown('W') && this.onWall && !this.grappling && !this.prevUpHeld) {    
         var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
         jumpMult *= jumpMult * jumpMult;
 
         console.log('in');
         this.acc.y -= 250 * jumpMult;
-        this.vel.x *= -2  
+        this.vel.x *= -2;
       }
     
     else if (upHeld && !this.grappling && !this.onWall) {
