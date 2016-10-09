@@ -26,10 +26,10 @@ window.Player = (function() {
 
     // sprite coordinates are based off their upper left corner, so if we want their center
     // to be on the player's center, we have to move them up and to the left
-    head.x = -head.width/2;
-    head.y = -head.height/2;
+  //  head.x = -head.width/5;
+    head.y = -head.height/4;
 
-    //head.pivot = new PIXI.Point(head.width/2, head.height/2);
+    head.pivot = new PIXI.Point(135, 80);
 
     this.img.addChild(head);
 
@@ -63,8 +63,12 @@ window.Player = (function() {
     var vel = this.vel;
     var grav = true;
 
-    var lookAngle = this.pos.diff(this.level.mouseLoc).direction();
-    //this.head.rotation = lookAngle;
+    var lookDiff = this.pos.diff(this.level.mouseLoc);
+    this.img.scale.x = lookDiff.x < 0.5 ? -1 : 1;
+    lookDiff.x = Math.abs(lookDiff.x);
+    var lookAngle = lookDiff.direction();
+
+    this.head.rotation = lookAngle;
 
     if (rightHeld) {
       acc.x += this.horizMoveForce;
