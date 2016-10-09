@@ -61,7 +61,7 @@ window.GameScreen = (function() {
 
   GameScreen.prototype.update = function(dt) {
     this.gameMouseLoc = this.convertCoords(app.input.mouseLoc.clone());
-    this.level.update(app.debug ? 0 : dt);
+    this.level.update(app.debug ? 0 : dt, this.gameMouseLoc);
 
     // Update camera
     var camera = this.camera;

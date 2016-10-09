@@ -4,19 +4,35 @@
 window.Player = (function() {
 
   function Player(xLoc, yLoc, level) {
-    Tangible.call(this, xLoc, yLoc, 1, 2, 1, level);
+    Tangible.call(this, xLoc, yLoc, 1, 1, 1, level);
 
     // woo, placeholder
-    var body = new PIXI.Sprite(app.assets.ground.texture);
+    var body = new PIXI.Sprite(app.assets.avatar_torso.texture);
     this.body = body;
     body.width = this.width;
     body.height = this.height;
+
     // sprite coordinates are based off their upper left corner, so if we want their center
     // to be on the player's center, we have to move them up and to the left
     body.x = -body.width/2;
     body.y = -body.height/2;
 
     this.img.addChild(body);
+
+    var head = new PIXI.Sprite(app.assets.avatar_head.texture);
+    this.head = head;
+    head.width = this.width;
+    head.height = this.height;
+
+    // sprite coordinates are based off their upper left corner, so if we want their center
+    // to be on the player's center, we have to move them up and to the left
+    head.x = -head.width/2;
+    head.y = -head.height/2;
+
+    //head.pivot = new PIXI.Point(head.width/2, head.height/2);
+
+    this.img.addChild(head);
+
 
     this.horizMoveForce = 25;
 
@@ -47,6 +63,9 @@ window.Player = (function() {
     var vel = this.vel;
     var grav = true;
 
+    var lookAngle = this.pos.diff(this.level.mouseLoc).direction();
+    //this.head.rotation = lookAngle;
+
     if (rightHeld) {
       acc.x += this.horizMoveForce;
       // Else means right will always override. If we want whichever was hit last to win, we'd
@@ -58,16 +77,16 @@ window.Player = (function() {
     // slowdown percent per second
     // TODO: maybe split this into x and y directions, based on if you're against a wall or something
     var drag = 3;
-    
-    if(app.input.isKeyDown('W') && this.onWall && !this.grappling && !this.prevUpHeld) {    
+
+    if(app.input.isKeyDown('W') && this.onWall && !this.grappling && !this.prevUpHeld) {
         var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
         jumpMult *= jumpMult * jumpMult;
 
         console.log('in');
         this.acc.y -= 250 * jumpMult;
-        this.vel.x *= -2  
+        this.vel.x *= -2
       }
-    
+
     else if (upHeld && !this.grappling && !this.onWall) {
       if (this.jumpTimer < this.jumpTimerMax) {
         // this determines the relationship between the jump timer and how much the character
@@ -79,7 +98,7 @@ window.Player = (function() {
       }
       this.jumpTimer += dt;
     }
-        
+
     else {
       this.jumpTimer = this.jumpTimerMax;
     }
@@ -147,7 +166,7 @@ window.Player = (function() {
       }
 
     }
-    
+
     if (horizontalHit) {
       this.onWall = true;
     }

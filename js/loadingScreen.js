@@ -49,7 +49,6 @@ window.LoadingScreen = (function() {
   // NOTE: You don't have to add something here to make it load, you can just add your own call to
   // `loader.add()` in `queueAssets()`. This is just here for convenience.
   var textures = [
-    'ground',
     'solid',
     'debug',
   ];

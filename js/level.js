@@ -134,8 +134,8 @@ window.Level = (function() {
     this.levelBackground.endFill();
   };
 
-  Level.prototype.update = function(dt) {
-
+  Level.prototype.update = function(dt, mouseLoc) {
+    this.mouseLoc = mouseLoc;
     // Using flags to do these instead of having the keyboard events directly resize
     // stuff so that it cant resize the level in the middle of a loop through it
     if (this.widthChangeFlag === 1) {
