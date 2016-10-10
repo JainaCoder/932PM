@@ -47,7 +47,7 @@ window.Player = (function() {
 
     this.vel = new Vector();
     this.acc = new Vector();
-    this.hookLen = 2;
+    this.hookLen = 3;
     this.grappling = false;
     this.prevUpHeld = false;
     this.hookPos = new Vector();
@@ -81,14 +81,6 @@ window.Player = (function() {
     var lookAngle = Math.min(1, Math.max(-1, headLookDiff.direction()));
 
     this.head.rotation = lookAngle;
-
-    if (rightHeld) {
-      acc.x += this.horizMoveForce;
-      // Else means right will always override. If we want whichever was hit last to win, we'd
-      // have to update the inputManager somehow to account for key hit order or something
-    } else if (leftHeld) {
-      acc.x -= this.horizMoveForce;
-    }
 
     // slowdown percent per second
     // TODO: maybe split this into x and y directions, based on if you're against a wall or something
@@ -131,28 +123,31 @@ window.Player = (function() {
         console.log("missed")
       }
 
-      // console.log(this.pos.x);
-      // console.log(this.pos.y);
-
-
-
-
-        /*if(this.level.terrain[x][y] !== null && this.level.terrain[x][y].solid) {
-          this.grappling = true;
-          grav = false;
-          var grapVec = new Vector(Math.cos(lookAngle), Math.sin(lookAngle))
-          acc.add(this.level.primaryMouseClick.clone().subtract(this.pos).multiply(15));
-        }*/
-
-
     }
 
     if(this.grappling) {
-      acc.add(this.pos.diff(this.hookPos).multiply(15));
+      var testVec = (this.hookPos.diff(this.pos));
+      
+      if(app.input.mouseMap[2]) {
+        this.hookLen -= .1;
+      }
+      
+      if(testVec.magnitude() > this.hookLen) {
+        acc.add(this.pos.diff(this.hookPos).multiply(60));
+      }
     }
 
     if (!app.input.mouseMap[0]) {
       this.grappling = false;
+      this.hookLen = 3;
+    }
+    
+    if (rightHeld) {
+      acc.x += this.horizMoveForce;
+      // Else means right will always override. If we want whichever was hit last to win, we'd
+      // have to update the inputManager somehow to account for key hit order or something
+    } else if (leftHeld) {
+      acc.x -= this.horizMoveForce;
     }
 
     // TODO: move some of this logic to `Tangible`
