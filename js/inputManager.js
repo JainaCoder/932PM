@@ -5,27 +5,27 @@ var app = app || {};
 
 app.input = {
 
-  keyMap: {},
-
-  // there's probably a function that actually does this, with cross-browser support
-  keyCodes: {
-    'A': 65,
-    'S': 83,
-    'W': 87,
-    'D': 68,
-    'O': 79,
-    'P': 80,
-    'K': 75,
-    'L': 76,
-    '~': 192,
-    'Q': 81,
-    'E': 69, // ( ͡° ͜ʖ ͡°)
+  //set up all keys now
+  keyMap: {
+    'a': false,
+    's': false,
+    'w': false,
+    'd': false,
+    'o': false,
+    'p': false,
+    'k': false,
+    'l': false,
+    'h': false,
+    'q': false,
+    'e': false, // ( ͡° ͜ʖ ͡°)
+    'm': false,
+    'Shift': false,
   },
 
   keyUpListeners: [],
 
   isKeyDown: function(char) {
-    return this.keyMap[this.keyCodes[char]];
+    return this.keyMap[char];
   },
 
   // this makes mouse clicks a little harder to detect, as you have to track if the button
@@ -76,16 +76,19 @@ app.input = {
   // update anywhere where keyMap is used :/
 
   onKeyUp: function(event) {
-    this.keyMap[event.keyCode] = false;
+    //event.key is case sensitive, but we don't want different functionality depending upon 
+    //whether or not shift is being held- for now, at least.
+    this.keyMap[event.key.toLowerCase()] = false;
     for (var i = 0, l = this.keyUpListeners.length; i < l; i++) {
-      if (this.keyUpListeners[i].keyCode === event.keyCode) {
+      if (this.keyUpListeners[i].key === event.key) {
         this.keyUpListeners[i].callback(event);
       }
     }
   },
 
   onKeyDown: function(event) {
-    this.keyMap[event.keyCode] = true;
+    this.keyMap[event.key.toLowerCase()] = true;
+    console.log(event.key);
   },
 
   onMouseUp: function(event) {
@@ -110,8 +113,8 @@ app.input = {
     this.mouseLoc = new Vector(event.offsetX, event.offsetY);
   },
 
-  registerKeyUpListener: function(keyCode, callback) {
-    this.keyUpListeners.push({ keyCode: keyCode, callback: callback });
+  registerKeyUpListener: function(key, callback) {
+    this.keyUpListeners.push({ key: key, callback: callback });
   },
 
   registerMouseButtonUpListener: function(mouseButton, callback) {

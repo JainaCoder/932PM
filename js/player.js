@@ -66,10 +66,10 @@ window.Player = (function() {
 
   Player.prototype.update = function(dt) {
     Tangible.prototype.update.call(this, dt);
-    var leftHeld = app.input.isKeyDown('A');
-    var rightHeld = app.input.isKeyDown('D');
-    var upHeld = app.input.isKeyDown('W');
-    var downHeld = app.input.isKeyDown('S');
+    var leftHeld = app.input.isKeyDown('a');
+    var rightHeld = app.input.isKeyDown('d');
+    var upHeld = app.input.isKeyDown('w');
+    var downHeld = app.input.isKeyDown('s');
     var acc = this.acc;
     var vel = this.vel;
     var grav = true;
@@ -86,7 +86,7 @@ window.Player = (function() {
     // TODO: maybe split this into x and y directions, based on if you're against a wall or something
     var drag = 3;
 
-    if(app.input.isKeyDown('W') && this.onWall && !this.grappling && !this.prevUpHeld) {
+    if(upHeld && this.onWall && !this.grappling && !this.prevUpHeld) {
         var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
         jumpMult *= jumpMult * jumpMult;
         this.acc.y -= 250 * jumpMult;

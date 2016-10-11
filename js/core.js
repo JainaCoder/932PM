@@ -28,7 +28,7 @@ app.core = {
     app.core.renderer = renderer;
 
     app.input.registerKeyUpListener(
-      app.input.keyCodes['~'],
+      'h',
       function() { app.debug = !app.debug; console.log("toggle debug"); }
     );
 

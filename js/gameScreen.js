@@ -15,19 +15,19 @@ window.GameScreen = (function() {
     this.saveHeld = false;
 
     app.input.registerKeyUpListener(
-      app.input.keyCodes['P'],
+      'p',
       function() { if(app.debug) this.level.widthChangeFlag = 1; }.bind(this)
     );
     app.input.registerKeyUpListener(
-      app.input.keyCodes['L'],
+      'l',
       function() { if(app.debug) this.level.heightChangeFlag = 1; }.bind(this)
     );
     app.input.registerKeyUpListener(
-      app.input.keyCodes['O'],
+      'o',
       function() { if(app.debug) this.level.widthChangeFlag = -1; }.bind(this)
     );
     app.input.registerKeyUpListener(
-      app.input.keyCodes['K'],
+      'k',
       function() { if(app.debug) this.level.heightChangeFlag = -1; }.bind(this)
     );
     app.input.registerMouseButtonUpListener(
@@ -68,12 +68,12 @@ window.GameScreen = (function() {
     var player = this.level.player;
 
     if (app.debug) {
-      var leftHeld = app.input.isKeyDown('A');
-      var rightHeld = app.input.isKeyDown('D');
-      var upHeld = app.input.isKeyDown('W');
-      var downHeld = app.input.isKeyDown('S');
-      var zoomInHeld = app.input.isKeyDown('E');
-      var zoomOutHeld = app.input.isKeyDown('Q');
+      var leftHeld = app.input.isKeyDown('a');
+      var rightHeld = app.input.isKeyDown('d');
+      var upHeld = app.input.isKeyDown('w');
+      var downHeld = app.input.isKeyDown('s');
+      var zoomInHeld = app.input.isKeyDown('e');
+      var zoomOutHeld = app.input.isKeyDown('q');
       var scrollSpeed = 500 / camera.zoom * dt;
       if (leftHeld) {
         camera.offset.x -= scrollSpeed;
@@ -116,7 +116,7 @@ window.GameScreen = (function() {
     }
 
     // Save level
-    if (app.input.keyMap[16] && app.input.keyMap[83]) { // shift-s
+    if (app.input.keyMap['s'] && app.input.keyMap['Shift']) { // shift + s
       if (!this.saveHeld) {
         this.saveHeld = true;
         this.level.save();
