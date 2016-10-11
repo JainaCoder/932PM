@@ -23,7 +23,9 @@ window.Level = (function() {
 
     this.intangibles = [];
     this.tangibles = [];
-    this.player = new Player(4, height/2, this);
+
+    this.spawnPoint = new Vector(4, height - 4);
+    this.player = new Player(this.spawnPoint, this);
     this.tangibles.push(this.player);
 
     // using this to track total time the level has been running
@@ -37,7 +39,7 @@ window.Level = (function() {
       for (var y = 0; y < height; y++) {
         var t = null;
         if (mapData.terrain[x][y] !== null) {
-          t = new TerrainTile(x, y);
+          t = new TerrainTile(x, y, mapData.terrain[x][y]);
         }
         this.terrain[x][y] = t;
       }
@@ -64,7 +66,7 @@ window.Level = (function() {
   };
 
   Level.prototype.checkAdjacentTiles = function(x, y) {
-    if (x < 0 || x >= this.width || y < 0 || y >= this.height || !this.terrain[x][y]) return;
+    if (x < 0 || x >= this.width || y < 0 || y >= this.height || !this.terrain[x][y] || !this.terrain[x][y].isStandardTile()) return;
     var n = y === 0               || (this.terrain[x][y-1] && this.terrain[x][y-1].isStandardTile());
     var s = y === this.height - 1 || (this.terrain[x][y+1] && this.terrain[x][y+1].isStandardTile());
     var w = x === 0               || (this.terrain[x-1][y] && this.terrain[x-1][y].isStandardTile());
@@ -127,6 +129,19 @@ window.Level = (function() {
     this.onSizeChange();
   };
 
+  Level.prototype.toggleTile = function(x, y) {
+    if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+      if (this.terrain[x][y] === null) {
+        this.terrain[x][y] = new TerrainTile(x, y);
+      } else if (this.terrain[x][y].isStandardTile()) {
+        this.terrain[x][y] = new TerrainTile(x, y, { type: 'spikes'});
+      } else {
+        this.terrain[x][y] = null;
+      }
+      this.updateAdjacentTiles(x,y);
+    }
+  };
+
   Level.prototype.onSizeChange = function() {
     this.levelBackground = new PIXI.Graphics();
     this.levelBackground.beginFill(app.palette.primary[0]);
@@ -157,14 +172,7 @@ window.Level = (function() {
       this.primaryMouseClick.floor();
       var x = this.primaryMouseClick.x;
       var y = this.primaryMouseClick.y;
-      if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
-        if (this.terrain[x][y] === null) {
-          this.terrain[x][y] = new TerrainTile(x, y);
-        } else {
-          this.terrain[x][y] = null;
-        }
-        this.updateAdjacentTiles(x,y);
-      }
+      this.toggleTile(x,y);
       this.primaryMouseClick = null;
     }
 
@@ -204,18 +212,18 @@ window.Level = (function() {
       for (var x = minGridX; x <= maxGridX; x++) {
         for (var y = minGridY; y <= maxGridY; y++) {
           var ter = this.terrain[x][y];
-          if (ter && ter.solid) {
-            var colVert = t1.testCollisionVert(x, y, 1, 1, t1.maxVel * dt);
-            var colHoriz = t1.testCollisionHoriz(x, y, 1, 1, t1.maxVel * dt);
+          if (ter) {
+            var colVert = t1.testCollisionVert(x + ter.offsetX, y + ter.offsetY, ter.width, ter.height, t1.maxVel * dt);
+            var colHoriz = t1.testCollisionHoriz(x + ter.offsetX, y + ter.offsetY, ter.width, ter.height, t1.maxVel * dt);
             if (colVert) {
               t1.onCollideTerrain(ter, x, y, true, false);
               ter.onCollide(t1, true);
-              t1.pos.y += colVert;
+              if (ter.solid) t1.pos.y += colVert;
             }
             if (colHoriz) {
               t1.onCollideTerrain(ter, x, y, false, true);
               ter.onCollide(t1, false);
-              t1.pos.x += colHoriz;
+              if (ter.solid) t1.pos.x += colHoriz;
             }
           }
         }
@@ -243,6 +251,10 @@ window.Level = (function() {
   Level.prototype.firstTerrainHitInLine = function(p1, p2) {
     var slope = (p2.y-p1.y)/(p2.x-p1.x);
     var intercept = p1.y-slope*p1.x;
+
+    // hacky way of changing it from a line segment to practically a line
+    p2 = p2.clone().subtract(p1).multiply(1000);
+
     var firstGridX = Math.floor(p2.x);
     var lastGridX = Math.floor(p1.x);
     // probs can simplify this

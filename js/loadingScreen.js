@@ -32,7 +32,7 @@ window.LoadingScreen = (function() {
       app.assets = resources;
       app.core.onLoad();
       console.log("loading map");
-      loadJSON("maps/playtest_hype.json", function(response) {
+      loadJSON("maps/this_is_a_map.json", function(response) {
         console.log("map data loaded");
         app.core.switchScreen(new GameScreen(JSON.parse(response)));
       });
@@ -84,9 +84,11 @@ window.LoadingScreen = (function() {
     addAvatarItem(loader, 'rightLegBottom');
     addAvatarItem(loader, 'rightLegTop');
     addAvatarItem(loader, 'torso');
-    
+
     loader.add('hookRope', 'assets/hook/Rope.png');
     loader.add('hook', 'assets/hook/Hook.png');
+
+    loader.add('spikesBottom', 'assets/spikes/bottom.png');
 
   }
 

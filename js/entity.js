@@ -4,9 +4,9 @@
 "use strict";
 
 window.Entity = (function() {
-  function Entity(xLoc, yLoc) {
+  function Entity(loc) {
     this.img = new PIXI.Container();
-    this.pos = new Vector(xLoc, yLoc);
+    this.pos = loc.clone();
   }
 
   // we can probably think of these as abstract functions.

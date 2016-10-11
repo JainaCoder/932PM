@@ -4,8 +4,8 @@
 "use strict";
 
 window.Tangible = (function() {
-  function Tangible(xLoc, yLoc, width, height, weight, level) {
-    Entity.call(this, xLoc, yLoc);
+  function Tangible(loc, width, height, weight, level) {
+    Entity.call(this, loc);
     this.width = width;
     this.height = height;
     this.level = level;

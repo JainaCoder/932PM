@@ -3,8 +3,8 @@
 
 window.Player = (function() {
 
-  function Player(xLoc, yLoc, level) {
-    Tangible.call(this, xLoc, yLoc, 1, 1, 1, level);
+  function Player(loc, level) {
+    Tangible.call(this, loc, 1, 1, 1, level);
 
     // woo, placeholder
     var body = new PIXI.Sprite(app.assets.avatar_torso.texture);
@@ -127,11 +127,11 @@ window.Player = (function() {
 
     if(this.grappling) {
       var testVec = (this.hookPos.diff(this.pos));
-      
+
       if(app.input.mouseMap[2]) {
         this.hookLen -= .1;
       }
-      
+
       if(testVec.magnitude() > this.hookLen) {
         acc.add(this.pos.diff(this.hookPos).multiply(60));
       }
@@ -141,7 +141,7 @@ window.Player = (function() {
       this.grappling = false;
       this.hookLen = 3;
     }
-    
+
     if (rightHeld) {
       acc.x += this.horizMoveForce;
       // Else means right will always override. If we want whichever was hit last to win, we'd
@@ -201,6 +201,14 @@ window.Player = (function() {
       this.onWall = true;
     }
 
+    if (terrain.type === 'spikes') {
+      this.respawn();
+    }
+
+  };
+
+  Player.prototype.respawn = function() {
+    this.pos = this.level.spawnPoint.clone();
   };
 
   return Player;

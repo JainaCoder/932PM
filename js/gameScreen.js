@@ -55,7 +55,7 @@ window.GameScreen = (function() {
     return coords.add(this.camera.offset.scaled(this.camera.zoom))
       .addScalars(-window.innerWidth/2, -window.innerHeight/2)
       .multiply(1/this.camera.zoom)
-    //  .addScalars(0.5, 0.5);
+      .addScalars(0.5, 0.5);
   };
 
 
@@ -116,7 +116,7 @@ window.GameScreen = (function() {
     }
 
     // Save level
-    if (app.input.keyMap['s'] && app.input.keyMap['Shift']) { // shift + s
+    if ((app.input.keyMap['s'] && app.input.keyMap['Shift']) || app.input.keyMap['v']) { // shift + s
       if (!this.saveHeld) {
         this.saveHeld = true;
         this.level.save();

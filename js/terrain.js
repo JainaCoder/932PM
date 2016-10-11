@@ -5,21 +5,51 @@ var app = app || {};
 
 window.TerrainTile = (function() {
 
-  function TerrainTile(xLoc, yLoc, data) {
+  function TerrainTile(xLoc, yLoc, saveData) {
     this.x = xLoc;
     this.y = yLoc;
-    var tex;
-    if (data) {
-      this.textureSource = data.texture;
-      tex = data.texture;
-      // NOTE: collision detection should check for this
-      this.solid = data.solid || data.solid === undefined; //defaults to true
+    if (saveData && saveData.type) {
+      this.type = saveData.type;
     } else {
-      tex = 'tile0';
-      this.solid = true;
+      this.type = 'tile';
     }
-    this.setSprite(tex);
+
+    var data = getTypeData(this.type);
+    this.width = data.width;
+    this.height = data.height;
+    this.offsetX = data.offsetX;
+    this.offsetY = data.offsetY;
+    this.solid = data.solid;
+
+    this.setSprite(data.tex);
   }
+
+  function getTypeData(type) {
+    switch(type) {
+    default:
+      console.log("erm, terrain doesn't recognize " + type);
+    case 'tile':
+      return {
+        tex: 'tile0',
+        width: 1,
+        height: 1,
+        offsetX: 0,
+        offsetY: 0,
+        solid: true,
+      };
+    case 'spikes':
+      return {
+        tex: 'spikesBottom',
+        width: 1,
+        height: 0.3,
+        offsetX: 0,
+        offsetY: 0.7,
+        solid: false,
+      };
+
+    }
+  }
+
 
   TerrainTile.prototype.setSprite = function(textureName) {
     var sprite = new PIXI.Sprite(app.assets[textureName].texture);
@@ -33,7 +63,7 @@ window.TerrainTile = (function() {
   };
 
   TerrainTile.prototype.isStandardTile = function() {
-    return this.textureSource === undefined;
+    return this.type === 'tile';
   };
 
   TerrainTile.prototype.render = function(stage) { stage.addChild(this.sprite); };
@@ -44,8 +74,7 @@ window.TerrainTile = (function() {
 
   TerrainTile.prototype.save = function() {
     return {
-      texture: this.textureSource,
-      solid: this.solid,
+      type: this.type,
     };
   };
 
