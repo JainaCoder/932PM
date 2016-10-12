@@ -6,7 +6,7 @@ var app = app || {};
 app.input = {
 
   //set up all keys now
-  keyMap: {
+  keyMap: Object.seal({
     'a': false,
     's': false,
     'w': false,
@@ -20,7 +20,7 @@ app.input = {
     'e': false, // ( ͡° ͜ʖ ͡°)
     'm': false,
     'Shift': false,
-  },
+  }),
 
   keyUpListeners: [],
 
