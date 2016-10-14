@@ -70,9 +70,11 @@ window.LoadingScreen = (function() {
     }
 
     // load tiles
-    for (i = 0; i < 16; i++) {
+    for (i = 0; i < 48; i++) {
       loader.add('tile'+i, "assets/tiles/" + i + ".png");
     }
+
+    
 
     addAvatarItem(loader, 'head');
     addAvatarItem(loader, 'hip');
