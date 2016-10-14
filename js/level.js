@@ -71,8 +71,9 @@ window.Level = (function() {
     var s = y === this.height - 1 || (this.terrain[x][y+1] && this.terrain[x][y+1].isStandardTile());
     var w = x === 0               || (this.terrain[x-1][y] && this.terrain[x-1][y].isStandardTile());
     var e = x === this.width - 1  || (this.terrain[x+1][y] && this.terrain[x+1][y].isStandardTile());
+    var mult = Math.floor(Math.random() * 3);
     var tileImgId = (w ? 0 : 1) + (s ? 0 : 2) + (e ? 0 : 4) + (n ? 0 : 8);
-    this.terrain[x][y].setSprite('tile'+tileImgId);
+    this.terrain[x][y].setSprite('tile'+(tileImgId+16*mult));
   };
 
   Level.prototype.increaseWidth = function() {
