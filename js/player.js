@@ -42,28 +42,42 @@ window.Player = (function() {
 
     this.img.addChild(head);
 
-
+    //ground speed
     this.horizMoveForce = 25;
 
+    //velocity
     this.vel = new Vector();
+    
+    //acceleration
     this.acc = new Vector();
-    this.hookLen = 3;
+    
+    //hook length when grappling
+    this.hookLen = 2.5;
+    
+    //how far the hook will grapple
+    this.hookMax = 12;
+    
+    //is it grappling?
     this.grappling = false;
+    
+    //are you holding down up? (for wall jumping)
     this.prevUpHeld = false;
+    
+    //position of the hook
     this.hookPos = new Vector();
+    
+    //was mouse pressed down last frame? (for grappling)
     this.prevMouseDown = false;
 
     // This determines how long after jumping we'll care if the user is still pressing the up button
     this.jumpTimerMax = 0.5;
 
-    this.keyMap = {};
-
   }
 
   // Player is a subclass of Tangible
   Player.prototype = Object.create(Tangible.prototype);
-
-
+  
+  //do things
   Player.prototype.update = function(dt) {
     Tangible.prototype.update.call(this, dt);
     var leftHeld = app.input.isKeyDown('a');
@@ -112,7 +126,7 @@ window.Player = (function() {
     if (app.input.mouseMap[0] && this.level.primaryMouseClick && !this.prevMouseDown) {
 
       var hit = this.level.firstTerrainHitInLine(this.pos, this.level.mouseLoc);
-      if (hit) {
+      if (hit && hit.diff(this.pos).magSqrd() <= this.hookMax * this.hookMax) {
         console.log("latched " + hit.x + ", " + hit.y)
         console.log(hit)
         this.grappling = true;
