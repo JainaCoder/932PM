@@ -44,27 +44,31 @@ window.Player = (function() {
 
     //ground speed
     this.horizMoveForce = 25;
-
+    
+    //the hook object when it's working.
+    //this.hook = new Hook(this, level);
+    
+    //hook length when grappling
+    this.hookLen = 2.5;
+      
+    this.maxLen = 2.5;
+    
+    //how far the hook will grapple
+    this.hookMax = 12;
+    
+    this.hookPos = new Vector();
+    
     //velocity
     this.vel = new Vector();
     
     //acceleration
     this.acc = new Vector();
     
-    //hook length when grappling
-    this.hookLen = 2.5;
-    
-    //how far the hook will grapple
-    this.hookMax = 12;
-    
     //is it grappling?
     this.grappling = false;
     
     //are you holding down up? (for wall jumping)
     this.prevUpHeld = false;
-    
-    //position of the hook
-    this.hookPos = new Vector();
     
     //was mouse pressed down last frame? (for grappling)
     this.prevMouseDown = false;
@@ -98,7 +102,7 @@ window.Player = (function() {
 
     // slowdown percent per second
     // TODO: maybe split this into x and y directions, based on if you're against a wall or something
-    var drag = 3;
+    var drag = 5;
 
     if(upHeld && this.onWall && !this.grappling && !this.prevUpHeld) {
         var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
@@ -145,6 +149,10 @@ window.Player = (function() {
       if(app.input.mouseMap[2]) {
         this.hookLen -= .1;
       }
+        
+      if(!app.input.mouseMap[2] && this.hookLen < this.maxLen) {
+        this.hookLen += .1;
+      }
 
       if(testVec.magnitude() > this.hookLen) {
         acc.add(this.pos.diff(this.hookPos).multiply(60));
@@ -153,7 +161,7 @@ window.Player = (function() {
 
     if (!app.input.mouseMap[0]) {
       this.grappling = false;
-      this.hookLen = 3;
+      this.hookLen = this.maxLen;
     }
 
     if (rightHeld) {

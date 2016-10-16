@@ -11,7 +11,7 @@ window.Tangible = (function() {
     this.level = level;
     // weight affects which tangible is pushed more in collision resolution
     this.weight = weight;
-    this.maxVel = 20.0;
+    this.maxVel = 18.0;
     if (width === undefined) {
       console.log("error: no width passed to Tangible");
     }
