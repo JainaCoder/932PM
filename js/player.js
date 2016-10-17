@@ -46,7 +46,8 @@ window.Player = (function() {
     this.horizMoveForce = 25;
     
     //the hook object when it's working.
-    //this.hook = new Hook(this, level);
+    //this.hook = new Hook(this, this.level);
+    //level.tangibles.push(this.hook);
     
     //hook length when grappling
     this.hookLen = 2.5;
@@ -67,15 +68,11 @@ window.Player = (function() {
     //is it grappling?
     this.grappling = false;
     
-    //are you holding down up? (for wall jumping)
-    this.prevUpHeld = false;
-    
     //was mouse pressed down last frame? (for grappling)
     this.prevMouseDown = false;
 
     // This determines how long after jumping we'll care if the user is still pressing the up button
     this.jumpTimerMax = 0.5;
-
   }
 
   // Player is a subclass of Tangible
@@ -104,12 +101,17 @@ window.Player = (function() {
     // TODO: maybe split this into x and y directions, based on if you're against a wall or something
     var drag = 5;
 
-    if(upHeld && this.onWall && !this.grappling && !this.prevUpHeld) {
+    
+    if(upHeld && this.onWall && !this.grappling) {
+      if (this.jumpTimer < this.jumpTimerMax) {
         var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
         jumpMult *= jumpMult * jumpMult;
-        this.acc.y -= 250 * jumpMult;
-        this.vel.x *= -2
+        acc.y -= 250 * jumpMult;
+        this.vel.x *= -4
       }
+      this.jumpTimer += dt;
+      
+    }
 
     else if (upHeld && !this.grappling && !this.onWall) {
       if (this.jumpTimer < this.jumpTimerMax) {
@@ -117,8 +119,11 @@ window.Player = (function() {
         // actually goes up
         var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
         jumpMult *= jumpMult * jumpMult;
-
+        
+        console.log(acc.y);
         acc.y -= 250 * jumpMult;
+        console.log(acc.y);
+
       }
       this.jumpTimer += dt;
     }
@@ -128,7 +133,11 @@ window.Player = (function() {
     }
 
     if (app.input.mouseMap[0] && this.level.primaryMouseClick && !this.prevMouseDown) {
-
+      
+      /*var tempVec = this.level.mouseLoc.diff(this.pos);
+      tempVec.normalize();
+      this.hook.fire(tempVec);*/
+      
       var hit = this.level.firstTerrainHitInLine(this.pos, this.level.mouseLoc);
       if (hit && hit.diff(this.pos).magSqrd() <= this.hookMax * this.hookMax) {
         console.log("latched " + hit.x + ", " + hit.y)
@@ -144,24 +153,31 @@ window.Player = (function() {
     }
 
     if(this.grappling) {
+    //if(this.hook.collided) {
       var testVec = (this.hookPos.diff(this.pos));
+      //var testVec = (this.hook.pos.diff(this.pos));
 
       if(app.input.mouseMap[2]) {
         this.hookLen -= .1;
+        //this.hook.len -= .1;
       }
         
       if(!app.input.mouseMap[2] && this.hookLen < this.maxLen) {
         this.hookLen += .1;
+        //this.hook.len += .1;
       }
 
       if(testVec.magnitude() > this.hookLen) {
         acc.add(this.pos.diff(this.hookPos).multiply(60));
+        //acc.add(this.pos.diff(this.hook.pos).multiply(60));
       }
     }
 
     if (!app.input.mouseMap[0]) {
       this.grappling = false;
       this.hookLen = this.maxLen;
+      //this.hook.on = false;
+      //this.hook.len = this.hook.maxLen;
     }
 
     if (rightHeld) {
@@ -195,7 +211,6 @@ window.Player = (function() {
     // these are determined each frame, these are the defaults, they are potentially
     // changed to true during collision detection
     this.onWall = false;
-    this.prevUpHeld = upHeld;
     this.prevMouseDown = app.input.mouseMap[0];
 
   };
@@ -221,6 +236,7 @@ window.Player = (function() {
 
     if (horizontalHit) {
       this.onWall = true;
+      this.jumpTimer = 0;
     }
 
     if (terrain.type === 'spikes') {

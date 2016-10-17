@@ -11,7 +11,7 @@ window.Tangible = (function() {
     this.level = level;
     // weight affects which tangible is pushed more in collision resolution
     this.weight = weight;
-    this.maxVel = 18.0;
+    this.maxVel = 20.0;
     if (width === undefined) {
       console.log("error: no width passed to Tangible");
     }
@@ -41,8 +41,6 @@ window.Tangible = (function() {
 
   Tangible.prototype.update = function(dt) {
     Entity.prototype.update.call(this, dt);
-
-
   };
 
   // copied this code over from the game I made first year in C#
