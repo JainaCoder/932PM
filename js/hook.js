@@ -12,7 +12,7 @@ window.Hook = (function() {
     
     this.player = player;
     
-    this.pos = this.player.pos;
+    this.pos = this.player.pos.clone();
     
     body.x = -body.width/2;
     body.y = -body.height/2;
@@ -21,7 +21,7 @@ window.Hook = (function() {
     
     this.player = player;
     
-    this.maxVel = 30;
+    this.maxVel = 1;
     
     //check if it should be drawn
     this.on = false;
@@ -35,30 +35,40 @@ window.Hook = (function() {
     //acceleration
     this.acc = new Vector();
     
+    this.firePos = new Vector();
+    
     //hook length when grappling
     this.len = 2.5;
       
     this.maxLen = 2.5;
     
     //how far the hook will grapple
-    this.hookMax = 12;
-    
+    this.hookMax = 12;  
   }
   
-  Hook.prototype.fire = function(dir) {
+  //hook is a subclass of tangible
+  Hook.prototype = Object.create(Tangible.prototype);
+
+  Hook.prototype.fire = function(pos) {
     this.on = true;
     this.collided = false;
     
-    this.pos = this.player.pos;
-    
-    this.acc = dir;
+    this.pos = this.player.pos.clone();
+    console.log("fire");
+    this.firePos = pos.clone();
   }
   
   Hook.prototype.update = function(dt) {
     Tangible.prototype.update.call(this, dt);
     
+    if(!this.on) {
+      this.pos = this.player.pos.clone();
+    }
+    
     //is the player grappling?
     if(this.on) {
+      
+      this.acc = this.pos.diff(this.firePos).normal();
       
       //rotate body
       this.body.rotation = Math.min(1, Math.max(-1, this.pos.diff(this.player.pos).clone().direction()));
@@ -83,8 +93,11 @@ window.Hook = (function() {
   }
   
   Hook.prototype.onCollideTerrain = function(terrain, x, y, verticalHit, horizontalHit) {
-    this.collided = true;
-    this.player.grappling = true;
+    if(terrain.type !== "spikes" && this.on && !this.collided) {
+      console.log("hit");
+      this.collided = true;
+      this.pos.add(this.acc.scaled(this.maxVel/4));
+    }
   }
   
   Hook.prototype.alive = function() {

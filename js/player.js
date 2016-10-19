@@ -46,7 +46,7 @@ window.Player = (function() {
     this.horizMoveForce = 25;
     
     //the hook object when it's working.
-    //this.hook = new Hook(this, this.level);
+    this.hook = new Hook(this, this.level);
     //level.tangibles.push(this.hook);
     
     //hook length when grappling
@@ -102,7 +102,7 @@ window.Player = (function() {
     var drag = 5;
 
     
-    if(upHeld && this.onWall && !this.grappling) {
+    if(upHeld && this.onWall && !this.hook.on) {
       if (this.jumpTimer < this.jumpTimerMax) {
         var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
         jumpMult *= jumpMult * jumpMult;
@@ -113,16 +113,14 @@ window.Player = (function() {
       
     }
 
-    else if (upHeld && !this.grappling && !this.onWall) {
+    else if (upHeld && !this.hook.on && !this.onWall) {
       if (this.jumpTimer < this.jumpTimerMax) {
         // this determines the relationship between the jump timer and how much the character
         // actually goes up
         var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
         jumpMult *= jumpMult * jumpMult;
         
-        console.log(acc.y);
         acc.y -= 250 * jumpMult;
-        console.log(acc.y);
 
       }
       this.jumpTimer += dt;
@@ -133,12 +131,9 @@ window.Player = (function() {
     }
 
     if (app.input.mouseMap[0] && this.level.primaryMouseClick && !this.prevMouseDown) {
+      this.hook.fire(this.level.mouseLoc);
       
-      /*var tempVec = this.level.mouseLoc.diff(this.pos);
-      tempVec.normalize();
-      this.hook.fire(tempVec);*/
-      
-      var hit = this.level.firstTerrainHitInLine(this.pos, this.level.mouseLoc);
+      /*var hit = this.level.firstTerrainHitInLine(this.pos, this.level.mouseLoc);
       if (hit && hit.diff(this.pos).magSqrd() <= this.hookMax * this.hookMax) {
         console.log("latched " + hit.x + ", " + hit.y)
         console.log(hit)
@@ -148,36 +143,36 @@ window.Player = (function() {
         console.log("hitPos: " + this.hookPos.x + ", " + this.hookPos.y);
       } else {
         console.log("missed")
-      }
+      }*/
 
     }
 
-    if(this.grappling) {
-    //if(this.hook.collided) {
-      var testVec = (this.hookPos.diff(this.pos));
-      //var testVec = (this.hook.pos.diff(this.pos));
+    //if(this.grappling) {
+    if(this.hook.collided) {
+      //var testVec = (this.hookPos.diff(this.pos));
+      var testVec = (this.hook.pos.diff(this.pos));
 
       if(app.input.mouseMap[2]) {
-        this.hookLen -= .1;
-        //this.hook.len -= .1;
+        //this.hookLen -= .1;
+        this.hook.len -= .1;
       }
         
       if(!app.input.mouseMap[2] && this.hookLen < this.maxLen) {
-        this.hookLen += .1;
-        //this.hook.len += .1;
+        //this.hookLen += .1;
+        this.hook.len += .1;
       }
 
       if(testVec.magnitude() > this.hookLen) {
-        acc.add(this.pos.diff(this.hookPos).multiply(60));
-        //acc.add(this.pos.diff(this.hook.pos).multiply(60));
+        //acc.add(this.pos.diff(this.hookPos).multiply(60));
+        acc.add(this.pos.diff(this.hook.pos).multiply(60));
       }
     }
 
     if (!app.input.mouseMap[0]) {
-      this.grappling = false;
-      this.hookLen = this.maxLen;
-      //this.hook.on = false;
-      //this.hook.len = this.hook.maxLen;
+      //this.grappling = false;
+      //this.hookLen = this.maxLen;
+      this.hook.on = false;
+      this.hook.len = this.hook.maxLen;
     }
 
     if (rightHeld) {
@@ -246,6 +241,9 @@ window.Player = (function() {
   };
 
   Player.prototype.respawn = function() {
+    this.hook.collided = false;
+    this.hook.on = false;
+    this.grappling = false;
     this.pos = this.level.spawnPoint.clone();
   };
 

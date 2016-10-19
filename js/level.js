@@ -27,7 +27,7 @@ window.Level = (function() {
     this.spawnPoint = new Vector(4, height - 4);
     this.player = new Player(this.spawnPoint, this);
     this.tangibles.push(this.player);
-    //this.tangibles.push(this.player.hook);
+    this.tangibles.push(this.player.hook);
 
     // using this to track total time the level has been running
     this.time = 0;
@@ -404,12 +404,12 @@ window.Level = (function() {
 
     var graphics = new PIXI.Graphics();
 
-    if(this.player.grappling) {
+    if(this.player.hook.on) {
       graphics.beginFill(0x000000);
       graphics.lineStyle(0.1, 0x000000);
 
       graphics.moveTo(this.player.pos.x, this.player.pos.y);
-      graphics.lineTo(this.player.hookPos.x, this.player.hookPos.y);
+      graphics.lineTo(this.player.hook.pos.x, this.player.hook.pos.y);
       graphics.endFill();
     }
 
