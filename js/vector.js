@@ -88,7 +88,7 @@ window.Vector = (function() {
 
   //return a unit vector with the same direction as this vector
   Vector.prototype.normal = function() {
-    return this.clone.normalize();
+    return this.clone().normalize();
   };
 
   //return a PIXI.Point with this vector's x and y
