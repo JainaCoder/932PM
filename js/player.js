@@ -38,36 +38,36 @@ window.Player = (function() {
   //  head.x = -head.width/5;
     head.y = -head.height/4.5;
 
-    head.pivot = new PIXI.Point(135, 80);
+    head.pivot = new PIXI.Point(1000, 700);
 
     this.img.addChild(head);
 
     //ground speed
     this.horizMoveForce = 25;
-    
+
     //the hook object when it's working.
     //this.hook = new Hook(this, this.level);
     //level.tangibles.push(this.hook);
-    
+
     //hook length when grappling
     this.hookLen = 2.5;
-      
+
     this.maxLen = 2.5;
-    
+
     //how far the hook will grapple
     this.hookMax = 12;
-    
+
     this.hookPos = new Vector();
-    
+
     //velocity
     this.vel = new Vector();
-    
+
     //acceleration
     this.acc = new Vector();
-    
+
     //is it grappling?
     this.grappling = false;
-    
+
     //was mouse pressed down last frame? (for grappling)
     this.prevMouseDown = false;
 
@@ -77,7 +77,7 @@ window.Player = (function() {
 
   // Player is a subclass of Tangible
   Player.prototype = Object.create(Tangible.prototype);
-  
+
   //do things
   Player.prototype.update = function(dt) {
     Tangible.prototype.update.call(this, dt);
@@ -101,7 +101,7 @@ window.Player = (function() {
     // TODO: maybe split this into x and y directions, based on if you're against a wall or something
     var drag = 5;
 
-    
+
     if(upHeld && this.onWall && !this.grappling) {
       if (this.jumpTimer < this.jumpTimerMax) {
         var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
@@ -110,7 +110,7 @@ window.Player = (function() {
         this.vel.x *= -4
       }
       this.jumpTimer += dt;
-      
+
     }
 
     else if (upHeld && !this.grappling && !this.onWall) {
@@ -119,7 +119,7 @@ window.Player = (function() {
         // actually goes up
         var jumpMult = 1 - this.jumpTimer / this.jumpTimerMax;
         jumpMult *= jumpMult * jumpMult;
-        
+
         console.log(acc.y);
         acc.y -= 250 * jumpMult;
         console.log(acc.y);
@@ -133,11 +133,11 @@ window.Player = (function() {
     }
 
     if (app.input.mouseMap[0] && this.level.primaryMouseClick && !this.prevMouseDown) {
-      
+
       /*var tempVec = this.level.mouseLoc.diff(this.pos);
       tempVec.normalize();
       this.hook.fire(tempVec);*/
-      
+
       var hit = this.level.firstTerrainHitInLine(this.pos, this.level.mouseLoc);
       if (hit && hit.diff(this.pos).magSqrd() <= this.hookMax * this.hookMax) {
         console.log("latched " + hit.x + ", " + hit.y)
@@ -161,7 +161,7 @@ window.Player = (function() {
         this.hookLen -= .1;
         //this.hook.len -= .1;
       }
-        
+
       if(!app.input.mouseMap[2] && this.hookLen < this.maxLen) {
         this.hookLen += .1;
         //this.hook.len += .1;
