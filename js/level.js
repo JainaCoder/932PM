@@ -1,4 +1,4 @@
-/*global PIXI TerrainTile Player downloadJSON Vector*/
+/*global PIXI TerrainTile Player downloadJSON DeathWall Vector*/
 "use strict";
 
 var app = app || {};
@@ -23,6 +23,8 @@ window.Level = (function() {
 
     this.intangibles = [];
     this.tangibles = [];
+
+    this.intangibles.push(new DeathWall(this));
 
     this.spawnPoint = new Vector(4, height - 4);
     this.player = new Player(this.spawnPoint, this);
@@ -389,9 +391,6 @@ window.Level = (function() {
       this.tangibles[i].render(stage);
     }
 
-    for (i = 0, l = this.intangibles.length; i < l; i++) {
-      this.intangibles[i].render(stage);
-    }
 
     // TODO: cull offscreen?
     for (var x = 0; x < this.width; x++) {
@@ -400,6 +399,11 @@ window.Level = (function() {
           this.terrain[x][y].render(stage);
         }
       }
+    }
+
+
+    for (i = 0, l = this.intangibles.length; i < l; i++) {
+      this.intangibles[i].render(stage);
     }
 
     var graphics = new PIXI.Graphics();

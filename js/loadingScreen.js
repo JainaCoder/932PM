@@ -74,7 +74,7 @@ window.LoadingScreen = (function() {
       loader.add('tile'+i, "assets/tiles/" + i + ".png");
     }
 
-    
+
 
     addAvatarItem(loader, 'head');
     addAvatarItem(loader, 'hip');
@@ -91,6 +91,7 @@ window.LoadingScreen = (function() {
     loader.add('hook', 'assets/hook/Hook.png');
 
     loader.add('spikesBottom', 'assets/spikes/bottom.png');
+    loader.add('deathWall', 'assets/deathWall/DeathWall.png')
 
   }
 

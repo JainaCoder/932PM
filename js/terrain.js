@@ -41,9 +41,9 @@ window.TerrainTile = (function() {
       return {
         tex: 'spikesBottom',
         width: 1,
-        height: 0.3,
+        height: 0.5,
         offsetX: 0,
-        offsetY: 0.7,
+        offsetY: 0.25,
         solid: false,
       };
 
@@ -55,11 +55,11 @@ window.TerrainTile = (function() {
     var sprite = new PIXI.Sprite(app.assets[textureName].texture);
     this.sprite = sprite;
 
-    sprite.width = 1;
-    sprite.height = 1;
+    sprite.width = this.width;
+    sprite.height = this.height;
     // offset since sprite's origin is its upper left corner
-    sprite.x = this.x - sprite.width/2;
-    sprite.y = this.y - sprite.height/2;
+    sprite.x = this.x - sprite.width/2 + this.offsetX;
+    sprite.y = this.y - sprite.height/2 + this.offsetY;
   };
 
   TerrainTile.prototype.isStandardTile = function() {
