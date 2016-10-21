@@ -56,11 +56,11 @@ window.Hook = (function() {
     this.pos = this.player.pos.clone();
     console.log("fire");
     this.firePos = pos.clone();
-  }
+    }
   
   Hook.prototype.update = function(dt) {
     Tangible.prototype.update.call(this, dt);
-    
+      
     if(!this.on) {
       this.pos = this.player.pos.clone();
     }
@@ -68,10 +68,10 @@ window.Hook = (function() {
     //is the player grappling?
     if(this.on) {
       
-      this.acc = this.pos.diff(this.firePos).normal();
+      this.acc = this.player.pos.diff(this.firePos).normal();
       
       //rotate body
-      this.body.rotation = Math.min(1, Math.max(-1, this.pos.diff(this.player.pos).clone().direction()));
+      this.body.rotation = Math.min(1, Math.max(-1, this.player.pos.diff(this.pos).clone().direction()));
 
       //has it hit anything?
       if(!this.collided) {
