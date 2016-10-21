@@ -3,9 +3,11 @@
 window.Hook = (function() {
   
   function Hook(player, level) {
-    Tangible.call(this, player.pos, 1, 1, 1, level);
+    Tangible.call(this, player.pos, 1, 1, .5, level);
     
     var body = new PIXI.Sprite(app.assets.hook.texture);
+    body.pivot.set(body.width/2, body.height/2);
+    
     this.body = body;
     this.body.width = this.width;
     this.body.height = this.height;
@@ -14,8 +16,10 @@ window.Hook = (function() {
     
     this.pos = this.player.pos.clone();
     
+    //this.body.pivot(body.width/2, body.height/2);
+    
     body.x = -body.width/2;
-    body.y = -body.height/2;
+    body.y = -body.height/4;
     
     this.img.addChild(body);
     
@@ -94,9 +98,20 @@ window.Hook = (function() {
   
   Hook.prototype.onCollideTerrain = function(terrain, x, y, verticalHit, horizontalHit) {
     if(terrain.type !== "spikes" && this.on && !this.collided) {
-      console.log("hit");
       this.collided = true;
       this.pos.add(this.acc.scaled(this.maxVel/4));
+    }
+  }
+  
+  Hook.prototype.testCollision = function(otherX, otherY, otherWidth, otherHeight) {
+    console.log("top");
+    if(!this.on) {
+      console.log("in");
+      return false;
+    }
+    
+    else {
+      Tangible.prototype.testCollision.call(this, otherX, otherY, otherWidth, otherHeight);
     }
   }
   
