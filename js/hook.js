@@ -1,12 +1,14 @@
-/* global Tangible PIXI app Vector*/
+/*global PIXI Tangible Vector app */
 "use strict";
 
 window.Hook = (function() {
 
   function Hook(player, level) {
-    Tangible.call(this, player.pos, 1, 1, 1, level);
+    Tangible.call(this, player.pos, 1, 1, .5, level);
 
     var body = new PIXI.Sprite(app.assets.hook.texture);
+    body.pivot.set(body.width/2, body.height/2);
+
     this.body = body;
     this.body.width = this.width;
     this.body.height = this.height;
@@ -15,14 +17,18 @@ window.Hook = (function() {
 
     this.pos = this.player.pos.clone();
 
+    //this.body.pivot(body.width/2, body.height/2);
+
     body.x = -body.width/2;
-    body.y = -body.height/2;
+    body.y = -body.height/4;
 
     this.img.addChild(body);
 
     this.player = player;
 
     this.maxVel = 1;
+
+    this.type = "hook";
 
     //check if it should be drawn
     this.on = false;
@@ -57,7 +63,7 @@ window.Hook = (function() {
     this.pos = this.player.pos.clone();
     console.log("fire");
     this.firePos = pos.clone();
-  }
+  };
 
   Hook.prototype.update = function(dt) {
     Tangible.prototype.update.call(this, dt);
@@ -69,10 +75,10 @@ window.Hook = (function() {
     //is the player grappling?
     if(this.on) {
 
-      this.acc = this.pos.diff(this.firePos).normal();
+      this.acc = this.player.pos.diff(this.firePos).normal();
 
       //rotate body
-      this.body.rotation = Math.min(1, Math.max(-1, this.pos.diff(this.player.pos).clone().direction()));
+      this.body.rotation = Math.min(1, Math.max(-1, this.player.pos.diff(this.pos).clone().direction()));
 
       //has it hit anything?
       if(!this.collided) {
@@ -90,20 +96,26 @@ window.Hook = (function() {
 
       }
     }
-
-  }
+  };
 
   Hook.prototype.onCollideTerrain = function(terrain, x, y, verticalHit, horizontalHit) {
     if(terrain.type !== "spikes" && this.on && !this.collided) {
-      console.log("hit");
       this.collided = true;
       this.pos.add(this.acc.scaled(this.maxVel/4));
     }
-  }
+  };
 
-  Hook.prototype.testCollision = function(x, y, w, h) {
-    Tangible.prototype.testCollision.call(this, x, y, w, h);
-  }
+  Hook.prototype.testCollision = function(otherX, otherY, otherWidth, otherHeight) {
+    console.log("top");
+    if(!this.on) {
+      console.log("in");
+      return false;
+    }
+
+    else {
+      Tangible.prototype.testCollision.call(this, otherX, otherY, otherWidth, otherHeight);
+    }
+  };
 
   Hook.prototype.alive = function() {
     return true;

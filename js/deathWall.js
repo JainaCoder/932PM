@@ -20,7 +20,7 @@ window.DeathWall = (function() {
     // to be on the player's center, we have to move them up and to the left
     // wall.x = -wall.width/2;
     //this.pos.y = -wall.width;
-    this.pos.x = -wall.height;
+    this.pos.x = -wall.width;
 
     this.img.addChild(wall);
 
@@ -32,12 +32,10 @@ window.DeathWall = (function() {
   DeathWall.prototype.update = function(dt) {
     Entity.prototype.update.call(this, dt);
     this.timer += dt;
-    this.pos.x += (Math.sin(this.timer) + 0.5) * 0.3 * dt;
+    this.pos.x += (Math.sin(this.timer) + 0.5) * 0.7 * dt;
     var player = this.level.player;
-    if (player.pos.x < this.pos.x + this.width) {
-      console.log("killem");
-    } else {
-      console.log(player.pos.x + " | " + this.pos.x + this.width * 0.9)
+    if (player.pos.x < this.pos.x + this.width * 0.9) {
+      player.respawn();
     }
   };
 

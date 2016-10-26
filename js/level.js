@@ -191,9 +191,20 @@ window.Level = (function() {
 
     for (var i = 0, l = this.tangibles.length; i < l; i++) {
       var t1 = this.tangibles[i];
+      
+      //attempt to fix collision detection, will break if unnoted
+      
+      if(t1.type && t1.type === "hook" && !t1.on) {
+        break;
+      }
+      
       for (var j = i + 1; j < l; j++) {
         var t2 = this.tangibles[j];
-
+        
+        if(t2.type && t2.type === "hook" && !t2.on) {
+          break;
+        }
+        
         var collision = t1.testCollision(t2.pos.x, t2.pos.y, t2.width, t2.height);
         if (collision) {
           t1.onCollide(t2);

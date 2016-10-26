@@ -167,8 +167,6 @@ window.Player = (function() {
     }
 
     if (!app.input.mouseMap[0]) {
-      //this.grappling = false;
-      //this.hookLen = this.maxLen;
       this.hook.on = false;
       this.hook.len = this.hook.maxLen;
     }
@@ -243,7 +241,7 @@ window.Player = (function() {
     this.hook.on = false;
     this.grappling = false;
     this.pos = this.level.spawnPoint.clone();
-    this.level.deathWall.pos.x = 0;
+    this.level.deathWall.pos.x = -this.level.deathWall.width;
   };
 
   return Player;
