@@ -24,7 +24,8 @@ window.Level = (function() {
     this.intangibles = [];
     this.tangibles = [];
 
-    this.intangibles.push(new DeathWall(this));
+    this.deathWall = new DeathWall(this);
+    this.intangibles.push(this.deathWall);
 
     this.spawnPoint = new Vector(4, height - 4);
     this.player = new Player(this.spawnPoint, this);

@@ -101,6 +101,10 @@ window.Hook = (function() {
     }
   }
 
+  Hook.prototype.testCollision = function(x, y, w, h) {
+    Tangible.prototype.testCollision.call(this, x, y, w, h);
+  }
+
   Hook.prototype.alive = function() {
     return true;
   };

@@ -33,6 +33,12 @@ window.DeathWall = (function() {
     Entity.prototype.update.call(this, dt);
     this.timer += dt;
     this.pos.x += (Math.sin(this.timer) + 0.5) * 0.3 * dt;
+    var player = this.level.player;
+    if (player.pos.x < this.pos.x + this.width) {
+      console.log("killem");
+    } else {
+      console.log(player.pos.x + " | " + this.pos.x + this.width * 0.9)
+    }
   };
 
   return DeathWall;

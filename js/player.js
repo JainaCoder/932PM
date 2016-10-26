@@ -1,4 +1,4 @@
-/*global PIXI Tangible app Vector*/
+/*global PIXI Tangible app Vector Hook*/
 "use strict";
 
 window.Player = (function() {
@@ -243,6 +243,7 @@ window.Player = (function() {
     this.hook.on = false;
     this.grappling = false;
     this.pos = this.level.spawnPoint.clone();
+    this.level.deathWall.pos.x = 0;
   };
 
   return Player;
