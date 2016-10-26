@@ -6,11 +6,13 @@ window.GameScreen = (function() {
     Screen.call(this); // not actually needed until there are args :/
     this.level = new Level(mapData);
     this.levelContainer = new PIXI.Container();
-
+    this.cameraSlowdownMax = 7; // when game starts, this keeps camera on player
+    this.cameraSlowdown = this.cameraSlowdownMax;
     this.camera = {
-      zoom: 100, // on-screen-pixels per tile
-      offset: this.level.player.pos.clone()
+      zoom: 10, // on-screen-pixels per tile
+      offset: new Vector(this.level.width + window.innerWidth/10, this.level.height/2),
     };
+
 
     this.saveHeld = false;
 
@@ -63,7 +65,6 @@ window.GameScreen = (function() {
     this.gameMouseLoc = this.convertCoords(app.input.mouseLoc.clone());
     this.level.update(app.debug ? 0 : dt, this.gameMouseLoc);
 
-    // Update camera
     var camera = this.camera;
     var player = this.level.player;
 
@@ -91,7 +92,7 @@ window.GameScreen = (function() {
         camera.zoom -= 1.5 * dt * camera.zoom;
       }
     } else {
-      var zoomGoal = Math.max(40, 60 - player.pos.diff(this.gameMouseLoc).magnitude() * 1);
+      var zoomGoal = Math.max(window.innerHeight/this.level.height * 1.03, Math.max(40, 65 - player.pos.diff(this.gameMouseLoc).magnitude() * 1));
       camera.zoom += (zoomGoal - camera.zoom) * 2.0 * dt;
 
       var currentX = player.pos.x;
@@ -102,16 +103,24 @@ window.GameScreen = (function() {
 
       var goalOffset = new Vector(
         Math.min (rightWall, Math.max(camera.offset.x, leftWall)),
-        Math.min (
-          this.level.height - window.innerHeight/2/camera.zoom,
-          Math.max(
-            0 + window.innerHeight/2/camera.zoom,
+        Math.max (
+          window.innerHeight/camera.zoom/2,
+          Math.min(
+            this.level.height - window.innerHeight/camera.zoom/2 - 1,
             player.pos.y
           )
         )
+        // this.level.height/2 + 4
+        //this.level.height - window.innerHeight/camera.zoom/2 - 1
+        //Math.min(window.innerHeight/camera.zoom/2, player.pos.y)
       );
 
-      camera.offset.add(camera.offset.diff(goalOffset).multiply(10.00 * dt));
+      var camSpeed = 10;
+      if (this.cameraSlowdown > 0) {
+        this.cameraSlowdown -= dt;
+        camSpeed *=  Math.pow(1 - this.cameraSlowdown/this.cameraSlowdownMax, 4);
+      }
+      camera.offset.add(camera.offset.diff(goalOffset).multiply(camSpeed * dt));
 
     }
 

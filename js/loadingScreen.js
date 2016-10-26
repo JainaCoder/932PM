@@ -8,6 +8,13 @@ window.LoadingScreen = (function() {
     // documentation for the loader is pretty poor :(
     var loader = PIXI.loader;
 
+    this.titleImg = PIXI.Sprite.fromImage("assets/TitleScreen.png");
+    var scale = Math.min(window.innerWidth, window.innerHeight);
+    this.titleImg.width = scale;
+    this.titleImg.height = scale;
+    this.titleImg.x = window.innerWidth/2 - scale/2;
+    this.titleImg.y = window.innerHeight/2 - scale/2;
+
     // This makes textures load with their scale mode set to `nearest`
     // which means that when scaled, they will stay pixilated instead of turning blury
     PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
@@ -91,7 +98,7 @@ window.LoadingScreen = (function() {
     loader.add('hook', 'assets/hook/Hook.png');
 
     loader.add('spikesBottom', 'assets/spikes/bottom.png');
-    loader.add('deathWall', 'assets/deathWall/DeathWall.png')
+    loader.add('deathWall', 'assets/deathWall/DeathWall.png');
 
   }
 
@@ -109,6 +116,7 @@ window.LoadingScreen = (function() {
   LoadingScreen.prototype.render = function(stage) {
     // If loading was gonna take a while, we'd want to render some kinda loading icon or something
     // here, but loading is probs gonna be pretty much instant
+    stage.addChild(this.titleImg);
   };
 
   return LoadingScreen;
