@@ -167,8 +167,6 @@ window.Player = (function() {
     }
 
     if (!app.input.mouseMap[0]) {
-      //this.grappling = false;
-      //this.hookLen = this.maxLen;
       this.hook.on = false;
       this.hook.len = this.hook.maxLen;
     }

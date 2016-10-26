@@ -27,6 +27,8 @@ window.Hook = (function() {
     
     this.maxVel = 1;
     
+    this.type = "hook";
+    
     //check if it should be drawn
     this.on = false;
     
