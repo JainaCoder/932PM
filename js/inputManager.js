@@ -19,6 +19,7 @@ app.input = {
     'q': false,
     'e': false, // ( ͡° ͜ʖ ͡°)
     'm': false,
+    'v': false,
     'Shift': false,
   }),
 
