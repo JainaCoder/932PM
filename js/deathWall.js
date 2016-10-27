@@ -20,7 +20,7 @@ window.DeathWall = (function() {
     // to be on the player's center, we have to move them up and to the left
     // wall.x = -wall.width/2;
     //this.pos.y = -wall.width;
-    this.pos.x = -wall.width;
+    this.pos.x = -wall.width * 1.5;
 
     this.img.addChild(wall);
 

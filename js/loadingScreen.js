@@ -84,14 +84,7 @@ window.LoadingScreen = (function() {
 
 
     addAvatarItem(loader, 'head');
-    addAvatarItem(loader, 'hip');
-    addAvatarItem(loader, 'leftFoot');
-    addAvatarItem(loader, 'leftLegBottom');
-    addAvatarItem(loader, 'leftLegTop');
     addAvatarItem(loader, 'neck');
-    addAvatarItem(loader, 'rightFoot');
-    addAvatarItem(loader, 'rightLegBottom');
-    addAvatarItem(loader, 'rightLegTop');
     addAvatarItem(loader, 'torso');
 
     loader.add('hookRope', 'assets/hook/Rope.png');
@@ -99,6 +92,11 @@ window.LoadingScreen = (function() {
 
     loader.add('spikesBottom', 'assets/spikes/bottom.png');
     loader.add('deathWall', 'assets/deathWall/DeathWall.png');
+    loader.add('instructions', 'assets/Controls.png');
+
+    for (i = 1; i <= 6; i++) {
+      loader.add('anim' + i, "assets/Animavatar" + i + ".png");
+    }
 
   }
 

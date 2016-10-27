@@ -41,7 +41,7 @@ window.TerrainTile = (function() {
       return {
         tex: 'spikesBottom',
         width: 1,
-        height: 0.5,
+        height: 0.25,
         offsetX: 0,
         offsetY: 0.25,
         solid: false,
@@ -56,7 +56,8 @@ window.TerrainTile = (function() {
     this.sprite = sprite;
 
     sprite.width = this.width;
-    sprite.height = this.height;
+    // haaaacky coooode
+    sprite.height = this.type === 'spikes' ? this.height * 2 : this.height;
     // offset since sprite's origin is its upper left corner
     sprite.x = this.x - sprite.width/2 + this.offsetX;
     sprite.y = this.y - sprite.height/2 + this.offsetY;

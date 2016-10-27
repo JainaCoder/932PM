@@ -46,6 +46,7 @@ window.GameScreen = (function() {
       }.bind(this)
     );
 
+
     console.log("gameScreen created");
   }
 

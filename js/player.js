@@ -3,19 +3,25 @@
 
 window.Player = (function() {
 
+  function prepBodyAnim(sprite) {
+    sprite.width = this.width;
+    sprite.height = this.height;
+    sprite.x = -sprite.width/2;
+    sprite.y = -sprite.height/2;
+  }
+
   function Player(loc, level) {
     Tangible.call(this, loc, 1, 1, 1, level);
 
     // woo, placeholder
     var body = new PIXI.Sprite(app.assets.avatar_torso.texture);
-    this.body = body;
-    body.width = this.width;
-    body.height = this.height;
+    this.anim = [];
+    // for (var i = 1; i <= 6; i++) {
+    //   this.anim[i] = new PIXI.Sprite(app.assets["anim" + i].texture);
+    //   prepBodyAnim.apply(this, this.anim[i]);
+    // }
 
-    // sprite coordinates are based off their upper left corner, so if we want their center
-    // to be on the player's center, we have to move them up and to the left
-    body.x = -body.width/2;
-    body.y = -body.height/2;
+
 
     this.img.addChild(body);
 
